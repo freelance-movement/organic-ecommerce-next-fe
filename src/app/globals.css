@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -11,7 +11,7 @@
   --card-foreground: hsl(210, 25%, 7.8431%);
   --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(210, 25%, 7.8431%);
-  --primary: #2E8B57;
+  --primary: #2e8b57;
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(210, 25%, 7.8431%);
   --secondary-foreground: hsl(0, 0%, 100%);
@@ -22,42 +22,47 @@
   --destructive: hsl(356.3033, 90.5579%, 54.3137%);
   --destructive-foreground: hsl(0, 0%, 100%);
   --border: hsl(201.4286, 30.4348%, 90.9804%);
-  --input: hsl(200, 23.0769%, 97.4510%);
+  --input: hsl(200, 23.0769%, 97.451%);
   --ring: hsl(202.8169, 89.1213%, 53.1373%);
   --chart-1: hsl(203.8863, 88.2845%, 53.1373%);
   --chart-2: hsl(159.7826, 100%, 36.0784%);
-  --chart-3: hsl(42.0290, 92.8251%, 56.2745%);
+  --chart-3: hsl(42.029, 92.8251%, 56.2745%);
   --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
-  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --chart-5: hsl(341.4894, 75.2%, 50.9804%);
   --sidebar: hsl(180, 6.6667%, 97.0588%);
   --sidebar-foreground: hsl(210, 25%, 7.8431%);
   --sidebar-primary: hsl(203.8863, 88.2845%, 53.1373%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
   --sidebar-accent: hsl(211.5789, 51.3514%, 92.7451%);
   --sidebar-accent-foreground: hsl(203.8863, 88.2845%, 53.1373%);
-  --sidebar-border: hsl(205.0000, 25.0000%, 90.5882%);
+  --sidebar-border: hsl(205, 25%, 90.5882%);
   --sidebar-ring: hsl(202.8169, 89.1213%, 53.1373%);
-  
+
   /* VietRoot Brand Colors */
   --viet-green-dark: hsl(147, 50%, 27%);
-  --viet-green-medium: #2E8B57;
+  --viet-green-medium: #2e8b57;
   --viet-green-light: hsl(147, 45%, 65%);
   --viet-earth-cream: hsl(48, 71%, 91%);
   --viet-earth-gold: hsl(43, 67%, 44%);
   --viet-earth-orange: hsl(32, 69%, 61%);
-  
-  --font-sans: 'Inter', 'Montserrat', system-ui, sans-serif;
+
+  --font-sans: "Inter", "Montserrat", system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: 1.3rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
@@ -66,47 +71,52 @@
   --background: hsl(0, 0%, 0%);
   --foreground: hsl(200, 6.6667%, 91.1765%);
   --card: hsl(228, 9.8039%, 10%);
-  --card-foreground: hsl(0, 0%, 85.0980%);
+  --card-foreground: hsl(0, 0%, 85.098%);
   --popover: hsl(0, 0%, 0%);
   --popover-foreground: hsl(200, 6.6667%, 91.1765%);
-  --primary: hsl(203.7736, 87.6033%, 52.5490%);
+  --primary: hsl(203.7736, 87.6033%, 52.549%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(195.0000, 15.3846%, 94.9020%);
+  --secondary: hsl(195, 15.3846%, 94.902%);
   --secondary-foreground: hsl(210, 25%, 7.8431%);
   --muted: hsl(0, 0%, 9.4118%);
   --muted-foreground: hsl(210, 3.3898%, 46.2745%);
   --accent: hsl(205.7143, 70%, 7.8431%);
-  --accent-foreground: hsl(203.7736, 87.6033%, 52.5490%);
+  --accent-foreground: hsl(203.7736, 87.6033%, 52.549%);
   --destructive: hsl(356.3033, 90.5579%, 54.3137%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(210, 5.2632%, 14.9020%);
+  --border: hsl(210, 5.2632%, 14.902%);
   --input: hsl(207.6923, 27.6596%, 18.4314%);
   --ring: hsl(202.8169, 89.1213%, 53.1373%);
   --chart-1: hsl(203.8863, 88.2845%, 53.1373%);
   --chart-2: hsl(159.7826, 100%, 36.0784%);
-  --chart-3: hsl(42.0290, 92.8251%, 56.2745%);
+  --chart-3: hsl(42.029, 92.8251%, 56.2745%);
   --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
-  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --chart-5: hsl(341.4894, 75.2%, 50.9804%);
   --sidebar: hsl(228, 9.8039%, 10%);
-  --sidebar-foreground: hsl(0, 0%, 85.0980%);
+  --sidebar-foreground: hsl(0, 0%, 85.098%);
   --sidebar-primary: hsl(202.8169, 89.1213%, 53.1373%);
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
   --sidebar-accent: hsl(205.7143, 70%, 7.8431%);
-  --sidebar-accent-foreground: hsl(203.7736, 87.6033%, 52.5490%);
+  --sidebar-accent-foreground: hsl(203.7736, 87.6033%, 52.549%);
   --sidebar-border: hsl(205.7143, 15.7895%, 26.0784%);
   --sidebar-ring: hsl(202.8169, 89.1213%, 53.1373%);
-  --font-sans: 'Inter', 'Montserrat', system-ui, sans-serif;
+  --font-sans: "Inter", "Montserrat", system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: 1.3rem;
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169, 89.1213%, 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169, 89.1213%, 53.1373% / 0);
 }
 
 @layer base {
@@ -123,27 +133,27 @@
   .animate-fade-in-up {
     animation: fadeInUp 0.6s ease-out forwards;
   }
-  
+
   .animation-delay-200 {
     animation-delay: 0.2s;
   }
-  
+
   .animation-delay-400 {
     animation-delay: 0.4s;
   }
-  
+
   .animation-delay-600 {
     animation-delay: 0.6s;
   }
-  
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
-  
+
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
+
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
@@ -162,7 +172,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -183,7 +194,7 @@
 }
 
 .hero-background {
-  background-color: #F2E8CF;
+  background-color: #f2e8cf;
   background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><defs><style>.cls-1{fill:%23F2E8CF;}</style></defs><rect class="cls-1" width="1024" height="1024"/></svg>');
   background-size: cover;
   background-position: center;

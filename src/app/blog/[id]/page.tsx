@@ -1,21 +1,37 @@
-'use client'
-import Navigation from "@/components/Navigation";
+"use client";
+import Navigation1 from "@/components/Navigation1";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import { Calendar, User, ArrowLeft, Share2, Heart, MessageCircle, ChevronRight, Tag, Clock, Eye, ThumbsUp, Facebook, Twitter, Linkedin } from "lucide-react";
+import {
+  Calendar,
+  User,
+  ArrowLeft,
+  Share2,
+  Heart,
+  MessageCircle,
+  ChevronRight,
+  Tag,
+  Clock,
+  Eye,
+  ThumbsUp,
+  Facebook,
+  Twitter,
+  Linkedin,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import {useRoute} from 'wouter'
+import { useParams } from "next/navigation";
 // Mock blog data based on id
 const getBlogById = (id: string) => {
   const blogs: Record<string, any> = {
     "1": {
       id: 1,
       title: "The Ancient Art of Vietnamese Tea Ceremony",
-      excerpt: "Discover the cultural significance and health benefits of traditional Vietnamese tea ceremonies, passed down through generations.",
+      excerpt:
+        "Discover the cultural significance and health benefits of traditional Vietnamese tea ceremonies, passed down through generations.",
       content: `
         <p>Vietnamese tea culture dates back over 1,000 years, deeply woven into the fabric of our daily life and social customs. More than just a beverage, tea represents a philosophy of mindfulness, community, and connection to nature that has sustained Vietnamese people through centuries of change.</p>
 
@@ -52,23 +68,27 @@ const getBlogById = (id: string) => {
         <p>As you develop your practice, you'll discover that tea ceremony is not about perfection, but about presence. Each cup offers an opportunity to slow down, breathe deeply, and connect with the moment.</p>
       `,
       author: "Mai Nguyen",
-      authorBio: "Tea ceremony master and cultural preservation advocate with over 15 years of experience in traditional Vietnamese tea arts.",
-      authorImage: "https://images.unsplash.com/photo-1494790108755-2616b612b187?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+      authorBio:
+        "Tea ceremony master and cultural preservation advocate with over 15 years of experience in traditional Vietnamese tea arts.",
+      authorImage:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b187?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
       date: "2024-03-15",
       readTime: "8 min read",
       category: "culture",
-      image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      image:
+        "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
       tags: ["Tea", "Culture", "Tradition", "Health", "Mindfulness"],
       views: 2847,
       likes: 156,
       comments: 23,
       publishedDate: "March 15, 2024",
-      lastUpdated: "March 16, 2024"
+      lastUpdated: "March 16, 2024",
     },
     "2": {
       id: 2,
       title: "Meet Farmer Duc: Guardian of Wild Honey Traditions",
-      excerpt: "Learn about Nguyen Van Duc's family legacy of wild honey harvesting in the pristine mountains of Ha Giang province.",
+      excerpt:
+        "Learn about Nguyen Van Duc's family legacy of wild honey harvesting in the pristine mountains of Ha Giang province.",
       content: `
         <p>High in the mountains of Ha Giang province, where mist dances between ancient limestone peaks and wildflowers carpet the valleys, Nguyen Van Duc continues a tradition that has sustained his family for three generations. As dawn breaks over the remote village of Dong Van, Duc prepares for another day of wild honey harvesting - a practice that requires equal parts courage, patience, and deep respect for nature.</p>
 
@@ -112,21 +132,24 @@ const getBlogById = (id: string) => {
         <p>When you open a jar of Wild Ha Giang Honey, you're not just tasting honey - you're experiencing the culmination of generations of knowledge, the essence of an untouched landscape, and the dedication of people like Duc who risk everything to preserve what matters most.</p>
       `,
       author: "VietRoot Team",
-      authorBio: "Our team works directly with farmers and artisans to share their incredible stories and preserve Vietnamese agricultural traditions.",
-      authorImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+      authorBio:
+        "Our team works directly with farmers and artisans to share their incredible stories and preserve Vietnamese agricultural traditions.",
+      authorImage:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
       date: "2024-03-10",
       readTime: "10 min read",
       category: "farmers",
-      image: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      image:
+        "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
       tags: ["Farmers", "Honey", "Ha Giang", "Tradition", "Sustainability"],
       views: 3421,
       likes: 203,
       comments: 31,
       publishedDate: "March 10, 2024",
-      lastUpdated: "March 10, 2024"
-    }
+      lastUpdated: "March 10, 2024",
+    },
   };
-  
+
   return blogs[id] || blogs["1"];
 };
 
@@ -135,109 +158,137 @@ const relatedPosts = [
     id: 3,
     title: "Turmeric: The Golden Root of Wellness",
     excerpt: "Explore the incredible health benefits of Vietnamese turmeric...",
-    image: "https://images.unsplash.com/photo-1615485499601-773e0eb7f0f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+    image:
+      "https://images.unsplash.com/photo-1615485499601-773e0eb7f0f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
     category: "wellness",
     readTime: "6 min read",
-    date: "2024-03-08"
+    date: "2024-03-08",
   },
   {
     id: 4,
     title: "Sustainable Farming: Our Commitment to the Earth",
     excerpt: "How VietRoot partners support environmental conservation...",
-    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+    image:
+      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
     category: "sustainability",
     readTime: "5 min read",
-    date: "2024-03-05"
+    date: "2024-03-05",
   },
   {
     id: 5,
     title: "The Art of Vietnamese Spice Blending",
-    excerpt: "Discover the secrets behind our traditional spice combinations...",
-    image: "https://images.unsplash.com/photo-1596040827120-68b088d77665?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+    excerpt:
+      "Discover the secrets behind our traditional spice combinations...",
+    image:
+      "https://images.unsplash.com/photo-1596040827120-68b088d77665?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
     category: "culture",
     readTime: "7 min read",
-    date: "2024-03-01"
-  }
+    date: "2024-03-01",
+  },
 ];
 
 export default function BlogDetail() {
-  const [match, params] = useRoute("/blog/:id");
+  const params = useParams();
   const [isLiked, setIsLiked] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [comment, setComment] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  
-  if (!match) {
+
+  if (!params.id) {
     return <div>Blog post not found</div>;
   }
 
-  const post = getBlogById(params.id);
+  const post = getBlogById(params.id as string);
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const text = `Check out this article: ${post.title}`;
-    
+    const title = "Check out this amazing article!";
+
     switch (platform) {
-      case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            url
+          )}`
+        );
         break;
-      case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+            url
+          )}&text=${encodeURIComponent(title)}`
+        );
         break;
-      case 'linkedin':
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+      case "linkedin":
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+            url
+          )}`
+        );
         break;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
+    <div className="min-h-screen bg-[#e6f5dc]">
+      <Navigation1 />
+
       {/* Breadcrumb */}
-      <section className="py-6 bg-white border-b">
+      {/* <section className="py-6 bg-white border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-viet-green-dark transition-colors">
+            <Link
+              href="/"
+              className="hover:text-viet-green-dark transition-colors"
+            >
               Home
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <Link href="/blog" className="hover:text-viet-green-dark transition-colors">
+            <Link
+              href="/blog"
+              className="hover:text-viet-green-dark transition-colors"
+            >
               Blog
             </Link>
             <ChevronRight className="h-4 w-4" />
             <span className="text-gray-900">Article</span>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Hero Image */}
       <section className="relative h-96 md:h-[500px] overflow-hidden">
-        <img 
-          src={post.image} 
+        <img
+          src={post.image}
           alt={post.title}
           className="w-full h-full object-cover"
           data-testid="img-blog-hero"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-        
+
         {/* Category Badge */}
         <div className="absolute top-8 left-8">
           <Badge className="bg-viet-green-dark text-white px-4 py-2 text-sm font-medium capitalize">
             {post.category}
           </Badge>
         </div>
-        
+
         {/* Article Meta */}
         <div className="absolute bottom-8 left-8 right-8 text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight" data-testid="text-blog-title">
+          <h1
+            className="text-4xl md:text-6xl font-bold mb-4 leading-tight"
+            data-testid="text-blog-title"
+          >
             {post.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-200 mb-6 max-w-4xl" data-testid="text-blog-excerpt">
+          <p
+            className="text-xl md:text-2xl text-gray-200 mb-6 max-w-4xl"
+            data-testid="text-blog-excerpt"
+          >
             {post.excerpt}
           </p>
-          
+
           <div className="flex items-center gap-6 text-gray-300">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
@@ -263,13 +314,15 @@ export default function BlogDetail() {
             <div className="lg:col-span-3">
               {/* Author Info */}
               <div className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-lg mb-8">
-                <img 
-                  src={post.authorImage} 
+                <img
+                  src={post.authorImage}
                   alt={post.author}
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900">{post.author}</h3>
+                  <h3 className="font-semibold text-lg text-gray-900">
+                    {post.author}
+                  </h3>
                   <p className="text-gray-600 text-sm">{post.authorBio}</p>
                   <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                     <span>Published {post.publishedDate}</span>
@@ -282,7 +335,7 @@ export default function BlogDetail() {
 
               {/* Article Content */}
               <div className="prose prose-lg max-w-none">
-                <div 
+                <div
                   dangerouslySetInnerHTML={{ __html: post.content }}
                   className="article-content"
                   data-testid="text-blog-content"
@@ -294,7 +347,11 @@ export default function BlogDetail() {
                 <h4 className="font-semibold text-gray-900 mb-4">Tags</h4>
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag: string, index: number) => (
-                    <Badge key={index} variant="secondary" className="bg-viet-green-dark text-white">
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="bg-viet-green-dark text-white"
+                    >
                       <Tag className="h-3 w-3 mr-1" />
                       {tag}
                     </Badge>
@@ -309,13 +366,19 @@ export default function BlogDetail() {
                     <Button
                       onClick={() => setIsLiked(!isLiked)}
                       variant={isLiked ? "default" : "outline"}
-                      className={`${isLiked ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
+                      className={`${
+                        isLiked ? "bg-red-500 hover:bg-red-600 text-white" : ""
+                      }`}
                       data-testid="button-like-post"
                     >
-                      <Heart className={`h-5 w-5 mr-2 ${isLiked ? 'fill-current' : ''}`} />
+                      <Heart
+                        className={`h-5 w-5 mr-2 ${
+                          isLiked ? "fill-current" : ""
+                        }`}
+                      />
                       {isLiked ? post.likes + 1 : post.likes} Likes
                     </Button>
-                    
+
                     <Button
                       onClick={() => setShowCommentForm(!showCommentForm)}
                       variant="outline"
@@ -325,13 +388,13 @@ export default function BlogDetail() {
                       {post.comments} Comments
                     </Button>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <span className="text-gray-600 mr-2">Share:</span>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleShare('facebook')}
+                      onClick={() => handleShare("facebook")}
                       className="p-2"
                     >
                       <Facebook className="h-4 w-4" />
@@ -339,7 +402,7 @@ export default function BlogDetail() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleShare('twitter')}
+                      onClick={() => handleShare("twitter")}
                       className="p-2"
                     >
                       <Twitter className="h-4 w-4" />
@@ -347,7 +410,7 @@ export default function BlogDetail() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleShare('linkedin')}
+                      onClick={() => handleShare("linkedin")}
                       className="p-2"
                     >
                       <Linkedin className="h-4 w-4" />
@@ -359,7 +422,9 @@ export default function BlogDetail() {
               {/* Comment Form */}
               {showCommentForm && (
                 <div className="mt-8 p-6 bg-white rounded-2xl shadow-lg">
-                  <h4 className="font-semibold text-xl mb-6">Leave a Comment</h4>
+                  <h4 className="font-semibold text-xl mb-6">
+                    Leave a Comment
+                  </h4>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
@@ -383,7 +448,10 @@ export default function BlogDetail() {
                       rows={4}
                       data-testid="textarea-comment"
                     />
-                    <Button className="bg-viet-green-dark hover:bg-viet-green-medium text-white" data-testid="button-submit-comment">
+                    <Button
+                      className="bg-viet-green-dark hover:bg-viet-green-medium text-white"
+                      data-testid="button-submit-comment"
+                    >
                       Post Comment
                     </Button>
                   </div>
@@ -392,29 +460,41 @@ export default function BlogDetail() {
 
               {/* Sample Comments */}
               <div className="mt-8 space-y-6">
-                <h4 className="font-semibold text-xl">Comments ({post.comments})</h4>
-                
+                <h4 className="font-semibold text-xl">
+                  Comments ({post.comments})
+                </h4>
+
                 {[
                   {
                     name: "Linh Tran",
                     date: "2 days ago",
-                    comment: "Beautiful article! As someone who grew up drinking tea with my grandmother, this really resonates with me. Thank you for preserving these important traditions."
+                    comment:
+                      "Beautiful article! As someone who grew up drinking tea with my grandmother, this really resonates with me. Thank you for preserving these important traditions.",
                   },
                   {
                     name: "James Mitchell",
                     date: "3 days ago",
-                    comment: "I recently started a daily tea practice after reading about its benefits. This article gives me a deeper appreciation for the cultural significance behind it."
+                    comment:
+                      "I recently started a daily tea practice after reading about its benefits. This article gives me a deeper appreciation for the cultural significance behind it.",
                   },
                   {
                     name: "Phuong Nguyen",
                     date: "5 days ago",
-                    comment: "My family has been making tea this way for generations. It's wonderful to see our traditions being shared with the world through VietRoot's platform."
-                  }
+                    comment:
+                      "My family has been making tea this way for generations. It's wonderful to see our traditions being shared with the world through VietRoot's platform.",
+                  },
                 ].map((comment, index) => (
-                  <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                  <div
+                    key={index}
+                    className="bg-white p-6 rounded-xl shadow-sm border border-gray-100"
+                  >
                     <div className="flex items-center justify-between mb-3">
-                      <h5 className="font-semibold text-gray-900">{comment.name}</h5>
-                      <span className="text-sm text-gray-500">{comment.date}</span>
+                      <h5 className="font-semibold text-gray-900">
+                        {comment.name}
+                      </h5>
+                      <span className="text-sm text-gray-500">
+                        {comment.date}
+                      </span>
                     </div>
                     <p className="text-gray-700">{comment.comment}</p>
                   </div>
@@ -427,21 +507,38 @@ export default function BlogDetail() {
               <div className="sticky top-8 space-y-8">
                 {/* Table of Contents */}
                 <div className="bg-white p-6 rounded-2xl shadow-lg">
-                  <h4 className="font-semibold text-lg mb-4">Table of Contents</h4>
+                  <h4 className="font-semibold text-lg mb-4">
+                    Table of Contents
+                  </h4>
                   <nav className="space-y-2">
-                    <a href="#origins" className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors">
+                    <a
+                      href="#origins"
+                      className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors"
+                    >
                       The Origins of Vietnamese Tea Culture
                     </a>
-                    <a href="#ritual" className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors">
+                    <a
+                      href="#ritual"
+                      className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors"
+                    >
                       The Ritual and Its Meaning
                     </a>
-                    <a href="#benefits" className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors">
+                    <a
+                      href="#benefits"
+                      className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors"
+                    >
                       Health Benefits Rooted in Tradition
                     </a>
-                    <a href="#modern" className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors">
+                    <a
+                      href="#modern"
+                      className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors"
+                    >
                       Modern Applications
                     </a>
-                    <a href="#practice" className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors">
+                    <a
+                      href="#practice"
+                      className="block text-sm text-gray-600 hover:text-viet-green-dark transition-colors"
+                    >
                       Starting Your Own Tea Practice
                     </a>
                   </nav>
@@ -451,7 +548,8 @@ export default function BlogDetail() {
                 <div className="bg-gradient-to-br from-viet-green-dark to-viet-green-medium text-white p-6 rounded-2xl">
                   <h4 className="font-semibold text-lg mb-3">Stay Updated</h4>
                   <p className="text-viet-green-light mb-4 text-sm">
-                    Get the latest articles about Vietnamese culture and organic products delivered to your inbox.
+                    Get the latest articles about Vietnamese culture and organic
+                    products delivered to your inbox.
                   </p>
                   <div className="space-y-3">
                     <Input
@@ -472,24 +570,31 @@ export default function BlogDetail() {
       {/* Related Articles */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Related Articles</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+            Related Articles
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {relatedPosts.map((relatedPost) => (
               <Link key={relatedPost.id} href={`/blog/${relatedPost.id}`}>
                 <article className="bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                   <div className="aspect-[4/3] overflow-hidden">
-                    <img 
-                      src={relatedPost.image} 
+                    <img
+                      src={relatedPost.image}
                       alt={relatedPost.title}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                     />
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
-                      <Badge variant="secondary" className="bg-viet-green-light text-viet-green-dark capitalize">
+                      <Badge
+                        variant="secondary"
+                        className="bg-viet-green-light text-viet-green-dark capitalize"
+                      >
                         {relatedPost.category}
                       </Badge>
-                      <span className="text-sm text-gray-500">{relatedPost.readTime}</span>
+                      <span className="text-sm text-gray-500">
+                        {relatedPost.readTime}
+                      </span>
                     </div>
                     <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
                       {relatedPost.title}
