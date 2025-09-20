@@ -1,5 +1,5 @@
 "use client";
-import Navigation1 from "@/components/Navigation1";
+import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import { Handshake, TrendingUp, Globe, Download, Send } from "lucide-react";
@@ -31,27 +31,23 @@ const benefits = [
 
 const partnershipTypes = [
   {
-    title: "Wholesale Distribution",
+    title: "Distributor",
     description:
       "Become a regional distributor for VietRoot products in your market.",
     minOrder: "Minimum order: ₫10,000,000",
     benefits: ["Wholesale pricing", "Marketing support", "Exclusive territory"],
   },
   {
-    title: "Retail Partnership",
+    title: "Retail Partner",
     description: "Stock VietRoot products in your store or online marketplace.",
     minOrder: "Minimum order: ₫2,000,000",
     benefits: ["Competitive margins", "Product training", "Display materials"],
   },
   {
-    title: "Investment Opportunity",
+    title: "Franchise",
     description: "Join us in expanding VietRoot's global reach and impact.",
     minOrder: "Investment from: $50,000 USD",
-    benefits: [
-      "Equity participation",
-      "Board representation",
-      "Strategic input",
-    ],
+    benefits: ["Brand recognition", "Operational support", "Training programs"],
   },
 ];
 
@@ -69,10 +65,33 @@ export default function Partnerships() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/v1/partnerships", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          companyName: formData.company,
+          contactName: formData.name,
+          email: formData.email,
+          phoneNumber: formData.phone || undefined,
+          partnershipType: formData.partnershipType || undefined,
+          message: formData.message || undefined,
+        }),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(
+          errorData.message || "Failed to submit partnership inquiry"
+        );
+      }
+
       toast({
         title: "Partnership inquiry sent!",
         description:
@@ -86,8 +105,15 @@ export default function Partnerships() {
         partnershipType: "",
         message: "",
       });
+    } catch (error: any) {
+      toast({
+        title: "Failed to send inquiry",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (
@@ -103,10 +129,10 @@ export default function Partnerships() {
 
   return (
     <div className="min-h-screen bg-[#e6f5dc]">
-      <Navigation1 />
+      <Navigation variant="fixed" />
 
       {/* Hero Section */}
-      <section className="pt-12 pb-3 md:pt-12 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
+      <section className="pt-24 pb-3 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
@@ -327,7 +353,7 @@ export default function Partnerships() {
                     value={formData.company}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                     data-testid="input-company"
                   />
                 </div>
@@ -342,7 +368,7 @@ export default function Partnerships() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                     data-testid="input-name"
                   />
                 </div>
@@ -359,7 +385,7 @@ export default function Partnerships() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full"
+                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                     data-testid="input-email"
                   />
                 </div>
@@ -373,7 +399,7 @@ export default function Partnerships() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full"
+                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                     data-testid="input-phone"
                   />
                 </div>
@@ -388,14 +414,17 @@ export default function Partnerships() {
                   value={formData.partnershipType}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-viet-green-medium"
+                  className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                   data-testid="select-partnership-type"
                 >
                   <option value="">Select partnership type</option>
-                  <option value="wholesale">Wholesale Distribution</option>
-                  <option value="retail">Retail Partnership</option>
-                  <option value="investment">Investment Opportunity</option>
-                  <option value="other">Other</option>
+                  <option value="Distributor">Distributor</option>
+                  <option value="Supplier">Supplier</option>
+                  <option value="Franchise">Franchise</option>
+                  <option value="Retail Partner">Retail Partner</option>
+                  <option value="Marketing Partner">Marketing Partner</option>
+                  <option value="Technology Partner">Technology Partner</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -408,7 +437,7 @@ export default function Partnerships() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full"
+                  className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
                   placeholder="Tell us about your business and partnership goals..."
                   data-testid="textarea-message"
                 />

@@ -1,6 +1,6 @@
 import { ArrowRight, CirclePlay, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Navigation1 from "./Navigation1";
+import Navigation1 from "./Navigation";
 // import heroImagePath from '@assets/fruits-background.png';
 // import healthySnackText from '@assets/healthy-snack-text.png';
 
@@ -41,9 +41,9 @@ export default function HeroSection() {
           </div>
 
           {/* Right column - Text content */}
-          <div className="flex flex-col justify-start text-center lg:text-left lg:pl-8 bg-white/95 lg:bg-transparent p-8 lg:p-0 rounded-2xl lg:rounded-none shadow-xl lg:shadow-none backdrop-blur-sm lg:backdrop-blur-none pt-8 md:pt-16 lg:pt-20">
-            {/* Healthy Snack Image */}
-            {/* <div className="mb-6 lg:mb-8">
+          {/* <div className="flex flex-col justify-start text-center lg:text-left lg:pl-8 bg-white/95 lg:bg-transparent p-8 lg:p-0 rounded-2xl lg:rounded-none shadow-xl lg:shadow-none backdrop-blur-sm lg:backdrop-blur-none pt-8 md:pt-16 lg:pt-20"> */}
+          {/* Healthy Snack Image */}
+          {/* <div className="mb-6 lg:mb-8">
               <img
                 src="/healthy-snack-text.png"
                 alt="Healthy Snack - The Root of Goodness, The Taste of Vietnam"
@@ -52,8 +52,8 @@ export default function HeroSection() {
               />
             </div> */}
 
-            {/* Description Text */}
-            {/* <div className="mb-8 lg:mb-10 max-w-2xl mx-auto lg:mx-0 lg:-mt-20">
+          {/* Description Text */}
+          {/* <div className="mb-8 lg:mb-10 max-w-2xl mx-auto lg:mx-0 lg:-mt-20">
               <p
                 className="text-lg md:text-xl lg:text-xl text-slate-700 leading-relaxed font-normal tracking-wide"
                 data-testid="text-hero-description"
@@ -79,8 +79,8 @@ export default function HeroSection() {
               </p>
             </div> */}
 
-            {/* CTA Button */}
-            {/* <div className="flex justify-center lg:justify-start mb-8">
+          {/* CTA Button */}
+          {/* <div className="flex justify-center lg:justify-start mb-8">
               <Button
                 className="group relative bg-gradient-to-br from-viet-green-medium via-viet-green-dark to-viet-green-medium hover:from-viet-green-dark hover:via-viet-green-medium hover:to-viet-green-dark text-white px-12 py-6 rounded-full text-lg font-bold transition-all duration-700 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-3xl border border-white/30"
                 data-testid="button-discover-now"
@@ -92,7 +92,7 @@ export default function HeroSection() {
                 </div>
               </Button>
             </div> */}
-          </div>
+          {/* </div> */}
         </div>
       </div>
 

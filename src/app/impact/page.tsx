@@ -92,10 +92,10 @@ const culturalPractices = [
 export default function Impact() {
   return (
     <div className="min-h-screen bg-[#e6f5dc]">
-      <Navigation />
+      <Navigation variant="fixed" />
 
       {/* Hero Section */}
-      <section className="pt-12 pb-3 md:pt-12 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
+      <section className="pt-20 pb-3 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
