@@ -9,10 +9,11 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 # Install dependencies based on the preferred package manager
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
+  corepack enable && \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci --legacy-peer-deps || npm i --legacy-peer-deps; \
+  elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile --strict-peer-dependencies=false; \
+  else npm install --no-audit --no-fund --legacy-peer-deps; \
   fi
 
 # Stage 2: Builder
@@ -29,10 +30,11 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 # Build the application
 RUN \
+  corepack enable && \
   if [ -f yarn.lock ]; then yarn build; \
   elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm build; \
-  else echo "Lockfile not found." && exit 1; \
+  elif [ -f pnpm-lock.yaml ]; then pnpm build; \
+  else npm run build; \
   fi
 
 # Stage 3: Production runtime
