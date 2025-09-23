@@ -1,54 +1,62 @@
+/**
+ * Farm story and image gallery
+ */
 "use client";
-import { useState, useEffect } from "react";
-import { Search, Leaf, Users, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-const images = [
-  {
-    url: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    alt: "Vietnamese farmer with fresh organic produce",
-    caption: "Our dedicated farmers working in organic fields",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    alt: "Traditional Vietnamese farming methods",
-    caption: "Traditional farming methods passed down generations",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1571168507631-6b5b6c0b0c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    alt: "Organic vegetables harvest",
-    caption: "Fresh organic harvest from Vietnamese soil",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-    alt: "Tea plantation in mountains",
-    caption: "Tea plantations in the misty mountains of Vietnam",
-  },
-];
+import { useState } from "react";
+import { Leaf, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "./ui/button";
+import ImageCarousel from "./ImageCarousel";
 
+/**
+ * Farm story and image gallery
+ */
 export default function QuickIntro() {
+  // Image carousel state and data
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [
+    {
+      url: "/image_1755871684707.png",
+      alt: "Organic farmer in Vietnam harvesting fresh produce",
+      caption: "Mr. Tran in the Red River Delta, nurturing organic greens"
+    },
+    {
+      url: "/image_1755871696467.png",
+      alt: "Traditional Vietnamese farming methods",
+      caption: "Preserving traditional farming wisdom in Dalat highlands"
+    },
+    {
+      url: "/image_1755874088476.png",
+      alt: "Sustainable agriculture practices",
+      caption: "Sustainable water management in Mekong Delta rice fields"
+    },
+    {
+      url: "/image_1755874292354.png",
+      alt: "Organic produce direct from Vietnam",
+      caption: "Hand-selected harvest ready for VietRoot customers"
+    }
+  ];
 
-  // Auto-play slider
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
+  // Image navigation functions
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
   };
 
   return (
-    <section className="pt-24 pb-20 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden">
+    <section 
+      className="pt-24 pb-20 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden"
+      aria-labelledby="intro-heading"
+    >
       {/* Background Decorations */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute top-10 left-10 w-64 h-64 bg-viet-green-medium/5 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-400"></div>
         <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-viet-green-light/20 rounded-full blur-2xl"></div>
@@ -57,28 +65,35 @@ export default function QuickIntro() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
-            <Leaf className="h-6 w-6 text-white" />
+            <Leaf className="h-6 w-6 text-white" aria-hidden="true" />
           </div>
           <h2
+            id="intro-heading"
             className="text-2xl md:text-3xl lg:text-4xl font-bold text-viet-green-dark mb-6 animate-fade-in-up"
             data-testid="text-intro-title"
           >
             VietRoot: Where the Essence of Vietnam Converges
           </h2>
-          <div className="w-32 h-2 bg-gradient-to-r from-viet-green-medium via-viet-earth-gold to-viet-green-medium mx-auto rounded-full animate-fade-in-up animation-delay-200 shadow-lg"></div>
+          <div 
+            className="w-32 h-2 bg-gradient-to-r from-viet-green-medium via-viet-earth-gold to-viet-green-medium mx-auto rounded-full animate-fade-in-up animation-delay-200 shadow-lg"
+            aria-hidden="true"
+          ></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left - Story Section */}
           <div className="animate-fade-in-up animation-delay-400">
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-viet-green-light/30 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-viet-green-medium/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div 
+                className="absolute top-0 right-0 w-32 h-32 bg-viet-green-medium/5 rounded-full -translate-y-16 translate-x-16"
+                aria-hidden="true"
+              ></div>
 
               {/* Letter Header */}
               <div className="relative mb-6">
                 <div className="text-center mb-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-3 shadow-lg">
-                    <Leaf className="h-6 w-6 text-white" />
+                    <Leaf className="h-6 w-6 text-white" aria-hidden="true" />
                   </div>
                   <p className="text-sm text-gray-500 italic">
                     A Letter from VietRoot
