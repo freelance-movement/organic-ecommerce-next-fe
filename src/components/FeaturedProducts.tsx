@@ -10,18 +10,58 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+type ProductVariant = {
+  id: string;
+  productId: string;
+  sku: string;
+  barCode: string;
+  retailPrice: string;
+  currency: string;
+  inventoryQty: number;
+  inventoryStatus: string | null;
+  variantName: string;
+  description: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ProductImage = {
+  url: string;
+  path: string;
+  size: number;
+  filename: string;
+  mimetype: string;
+  originalName: string;
+};
+
+type ProductMedia = {
+  images: ProductImage[];
+  videos: any[];
+  documents: any[];
+  totalSize: number;
+  uploadedAt: string;
+};
+
+type ProductCategory = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
 type BackendProduct = {
   id: string;
   name: string;
-  description?: string;
-  slug?: string;
-  price?: number | string;
-  originalPrice?: number | string | null;
-  thumbnailUrl?: string | null;
-  mainImageUrl?: string | null;
-  images?: Array<{ url: string }> | string[];
-  badge?: string;
-  createdAt?: string;
+  slug: string;
+  description: string;
+  tags: string[];
+  media: ProductMedia;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  variants: ProductVariant[];
+  categories: ProductCategory[];
 };
 
 export default function FeaturedProducts() {
@@ -45,7 +85,7 @@ export default function FeaturedProducts() {
           throw new Error(`${res.status}: ${text}`);
         }
         const data = await res.json();
-        const items: BackendProduct[] = data?.items || data?.data || [];
+        const items: BackendProduct[] = data?.data || data?.items || [];
         if (isMounted) setProducts(items);
       } catch (e: any) {
         if (isMounted) setError(e?.message || "Failed to load products");
@@ -98,23 +138,30 @@ export default function FeaturedProducts() {
 
   const formatPrice = (value?: number | string | null) => {
     if (value === null || value === undefined) return "";
-    if (typeof value === "string") return value; // already formatted
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(numValue)) return String(value);
     try {
-      return new Intl.NumberFormat("vi-VN", {
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+      }).format(numValue);
     } catch {
-      return String(value);
+      return `$${numValue.toFixed(2)}`;
     }
   };
 
+  const getProductPrice = (product: BackendProduct) => {
+    if (product.variants && product.variants.length > 0) {
+      return product.variants[0].retailPrice;
+    }
+    return null;
+  };
+
   const pickImage = (p: BackendProduct) => {
-    if (p.thumbnailUrl) return p.thumbnailUrl;
-    if (p.mainImageUrl) return p.mainImageUrl;
-    if (Array.isArray(p.images) && p.images.length > 0) {
-      const first = p.images[0] as any;
-      return typeof first === "string" ? first : first.url;
+    if (p.media && p.media.images && p.media.images.length > 0) {
+      return `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${
+        p.media.images[0].url ?? p.media.images[0]
+      }`;
     }
     return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
   };
@@ -189,9 +236,16 @@ export default function FeaturedProducts() {
                             >
                               {/* Badge */}
                               <div className="absolute top-3 left-3 z-10">
-                                {product.badge ? (
+                                {product.variants &&
+                                product.variants.length > 0 &&
+                                product.variants[0].inventoryQty < 10 ? (
+                                  <span className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                                    Low Stock
+                                  </span>
+                                ) : product.categories &&
+                                  product.categories.length > 0 ? (
                                   <span className="bg-gradient-to-r from-viet-green-medium to-viet-green-dark text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
-                                    {product.badge}
+                                    {product.categories[0].name}
                                   </span>
                                 ) : null}
                               </div>
@@ -215,13 +269,14 @@ export default function FeaturedProducts() {
                                       className="text-2xl font-bold text-viet-green-medium"
                                       data-testid={`text-product-price-${product.id}`}
                                     >
-                                      {formatPrice(product.price)}
+                                      {formatPrice(getProductPrice(product))}
                                     </span>
-                                    {product.originalPrice ? (
-                                      <span className="text-sm text-gray-400 line-through">
-                                        {formatPrice(product.originalPrice)}
-                                      </span>
-                                    ) : null}
+                                    {product.variants &&
+                                      product.variants.length > 0 && (
+                                        <span className="text-xs text-gray-500">
+                                          {product.variants[0].variantName}
+                                        </span>
+                                      )}
                                   </div>
 
                                   <Button
@@ -232,7 +287,10 @@ export default function FeaturedProducts() {
                                       e.stopPropagation();
                                       // Add to cart functionality can be added here
                                       console.log("Add to cart", {
-                                        id: product.id,
+                                        productId: product.id,
+                                        variantId: product.variants?.[0]?.id,
+                                        name: product.name,
+                                        price: getProductPrice(product),
                                       });
                                     }}
                                   >
@@ -242,18 +300,45 @@ export default function FeaturedProducts() {
                                 </div>
 
                                 <h3
-                                  className="text-lg font-bold text-gray-800 group-hover:text-viet-green-dark transition-colors duration-300"
+                                  className="text-lg font-bold text-gray-800 group-hover:text-viet-green-dark transition-colors duration-300 truncate"
                                   data-testid={`text-product-name-${product.id}`}
+                                  title={product.name}
                                 >
                                   {product.name}
                                 </h3>
 
-                                <p
-                                  className="text-gray-600 text-sm leading-relaxed"
-                                  data-testid={`text-product-description-${product.id}`}
-                                >
-                                  {product.description || ""}
-                                </p>
+                                {/* Extra info row: categories and stock status */}
+                                <div className="flex items-center flex-wrap gap-2">
+                                  {product.categories
+                                    ?.slice(0, 2)
+                                    .map((category) => (
+                                      <span
+                                        key={category.id}
+                                        className="text-xs bg-viet-green-light/20 text-viet-green-dark px-2 py-1 rounded-full"
+                                      >
+                                        {category.name}
+                                      </span>
+                                    ))}
+                                  {product.variants && product.variants[0] && (
+                                    <span
+                                      className={`text-xs px-2 py-1 rounded-full ml-auto ${
+                                        product.variants[0].inventoryQty <= 0
+                                          ? "bg-gray-200 text-gray-600"
+                                          : product.variants[0].inventoryQty <
+                                            10
+                                          ? "bg-orange-100 text-orange-700"
+                                          : "bg-green-100 text-green-700"
+                                      }`}
+                                      data-testid={`stock-chip-${product.id}`}
+                                    >
+                                      {product.variants[0].inventoryQty <= 0
+                                        ? "Out of stock"
+                                        : product.variants[0].inventoryQty < 10
+                                        ? "Low stock"
+                                        : "In stock"}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
 
                               {/* Hover Effect Border */}

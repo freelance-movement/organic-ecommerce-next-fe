@@ -10,6 +10,7 @@ import {
   Tag,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ type BlogItem = {
   updatedAt?: string;
   publishedAt?: string | null;
   category?: string;
+  slug?: string; // Added slug for featured post link
 };
 
 export default function Blog() {
@@ -122,7 +124,7 @@ export default function Blog() {
       <Navigation variant="fixed" />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-3 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
+      <section className="pt-24 mt-0 md:mt-8 pb-3 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
@@ -183,30 +185,37 @@ export default function Blog() {
                 data-testid="input-search-blog"
               />
 
-              {/* Clear Button */}
-              {searchTerm && (
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-white hover:bg-viet-green-medium transition-all duration-200 rounded-full hover:scale-110 hover:shadow-md"
-                    title="Clear search"
-                  >
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+              {/* Right-side actions: Spinner when loading, otherwise clear button */}
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                {loading ? (
+                  <Loader2
+                    className="h-5 w-5 animate-spin text-viet-green-medium"
+                    aria-label="Loading"
+                  />
+                ) : (
+                  searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-white hover:bg-viet-green-medium transition-all duration-200 rounded-full hover:scale-110 hover:shadow-md"
+                      title="Clear search"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              )}
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )
+                )}
+              </div>
             </div>
 
             {/* Search Results Count */}
@@ -230,71 +239,86 @@ export default function Blog() {
       </section>
 
       {/* Featured Post - Only show on first page */}
-      {currentPage === 1 && posts.length > 0 && (
+      {currentPage === 1 && (
         <section className="py-12 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="h-64 lg:h-auto">
-                  <img
-                    src={pickImage(posts[0])}
-                    alt={posts[0].title}
-                    className="w-full h-full object-cover"
-                    data-testid="featured-post-image"
-                  />
-                </div>
-                <div className="p-8 lg:p-12">
-                  <div className="flex items-center mb-4">
-                    <Badge className="bg-viet-green-medium text-white mr-3">
-                      Featured
-                    </Badge>
-                    <span
-                      className="text-sm text-gray-500"
-                      data-testid="featured-post-read-time"
-                    >
-                      {posts[0].readTime || ""}
-                    </span>
-                  </div>
-
-                  <h2
-                    className="text-2xl md:text-3xl font-bold text-viet-green-dark mb-4"
-                    data-testid="featured-post-title"
-                  >
-                    {posts[0].title}
-                  </h2>
-
-                  <p
-                    className="text-gray-700 mb-6 text-lg leading-relaxed"
-                    data-testid="featured-post-excerpt"
-                  >
-                    {posts[0].excerpt || ""}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <User className="h-4 w-4 mr-2" />
-                      <span data-testid="featured-post-author">
-                        {posts[0].author || ""}
-                      </span>
-                      <Calendar className="h-4 w-4 ml-4 mr-2" />
-                      <span data-testid="featured-post-date">
-                        {formatDate(posts[0].createdAt)}
-                      </span>
-                    </div>
-
-                    <Link href={`/blog/${posts[0].id}`}>
-                      <Button
-                        className="bg-viet-green-medium hover:bg-viet-green-dark text-white"
-                        data-testid="featured-post-read-more"
-                      >
-                        Read More
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </Link>
+            {loading ? (
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
+                <div className="grid grid-cols-1 lg:grid-cols-2">
+                  <div className="h-64 lg:h-auto bg-gray-200" />
+                  <div className="p-8 lg:p-12 space-y-4">
+                    <div className="h-6 bg-gray-200 rounded w-24" />
+                    <div className="h-8 bg-gray-200 rounded w-3/4" />
+                    <div className="h-4 bg-gray-200 rounded w-full" />
+                    <div className="h-4 bg-gray-200 rounded w-5/6" />
+                    <div className="h-10 bg-gray-200 rounded w-32 ml-auto" />
                   </div>
                 </div>
               </div>
-            </div>
+            ) : posts.length > 0 ? (
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2">
+                  <div className="h-64 lg:h-auto">
+                    <img
+                      src={pickImage(posts[0])}
+                      alt={posts[0].title}
+                      className="w-full h-full object-cover"
+                      data-testid="featured-post-image"
+                    />
+                  </div>
+                  <div className="p-8 lg:p-12">
+                    <div className="flex items-center mb-4">
+                      <Badge className="bg-viet-green-medium text-white mr-3">
+                        Featured
+                      </Badge>
+                      <span
+                        className="text-sm text-gray-500"
+                        data-testid="featured-post-read-time"
+                      >
+                        {posts[0].readTime || ""}
+                      </span>
+                    </div>
+
+                    <h2
+                      className="text-2xl md:text-3xl font-bold text-viet-green-dark mb-4"
+                      data-testid="featured-post-title"
+                    >
+                      {posts[0].title}
+                    </h2>
+
+                    <p
+                      className="text-gray-700 mb-6 text-lg leading-relaxed"
+                      data-testid="featured-post-excerpt"
+                    >
+                      {posts[0].excerpt || ""}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <User className="h-4 w-4 mr-2" />
+                        <span data-testid="featured-post-author">
+                          {posts[0].author || ""}
+                        </span>
+                        <Calendar className="h-4 w-4 ml-4 mr-2" />
+                        <span data-testid="featured-post-date">
+                          {formatDate(posts[0].createdAt)}
+                        </span>
+                      </div>
+
+                      <Link href={`/blog/${posts[0].slug || posts[0].id}`}>
+                        <Button
+                          className="bg-viet-green-medium hover:bg-viet-green-dark text-white"
+                          data-testid="featured-post-read-more"
+                        >
+                          Read More
+                          <ArrowRight className="h-4 w-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
       )}
@@ -336,7 +360,7 @@ export default function Blog() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {(currentPage === 1 ? posts.slice(1) : posts).map((post) => (
-                  <Link key={post.id} href={`/blog/${post.id}`}>
+                  <Link key={post.id} href={`/blog/${post.slug || post.id}`}>
                     <article
                       className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden cursor-pointer"
                       data-testid={`blog-post-${post.id}`}

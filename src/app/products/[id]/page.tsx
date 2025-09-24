@@ -22,84 +22,93 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 
 type ProductVariant = {
   id: string;
-  name?: string;
-  sku?: string;
-  price?: number | string;
-  originalPrice?: number | string | null;
-  stockCount?: number;
+  productId: string;
+  sku: string;
+  barCode: string;
+  retailPrice: string;
+  currency: string;
+  inventoryQty: number;
+  inventoryStatus: string | null;
+  variantName: string;
+  description: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ProductImage = {
+  url: string;
+  path: string;
+  size: number;
+  filename: string;
+  mimetype: string;
+  originalName: string;
+};
+
+type ProductVideo = {
+  url: string;
+  path: string;
+  size: number;
+  filename: string;
+  mimetype: string;
+  originalName: string;
+};
+
+type ProductMedia = {
+  images: ProductImage[];
+  videos: ProductVideo[];
+  documents: any[];
+  totalSize: number;
+  uploadedAt: string;
+};
+
+type ProductCategory = {
+  id: string;
+  name: string;
+  slug: string;
 };
 
 type ProductDetail = {
-  id: string | number;
+  id: string;
   name: string;
-  category?: string;
-  description?: string;
-  price?: number | string;
-  originalPrice?: number | string | null;
-  rating?: number;
-  reviews?: number;
-  images?: string[] | Array<{ url: string }>;
-  tags?: string[];
-  badges?: string[];
-  inStock?: boolean;
-  stockCount?: number;
-  weight?: string;
-  origin?: string;
-  harvestDate?: string;
-  fullDescription?: string;
-  benefits?: string[];
-  ingredients?: string[];
-  usage?: string;
-  storage?: string;
-  certifications?: string[];
-  farmer?: {
-    name?: string;
-    location?: string;
-    experience?: string;
-    story?: string;
-  };
-  variants?: ProductVariant[];
-  variantLabel?: string;
-  mainImageUrl?: string | null;
-  thumbnailUrl?: string | null;
+  slug: string;
+  description: string;
+  tags: string[];
+  media: ProductMedia;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  variants: ProductVariant[];
+  categories: ProductCategory[];
 };
 
-const relatedProducts = [
-  {
-    id: 3,
-    name: "Turmeric Root Powder",
-    price: "₫180,000",
-    image:
-      "https://images.unsplash.com/photo-1615485499601-773e0eb7f0f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-    rating: 4.7,
-  },
-  {
-    id: 4,
-    name: "Virgin Coconut Oil",
-    price: "₫280,000",
-    image:
-      "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-    rating: 4.9,
-  },
-  {
-    id: 5,
-    name: "Dried Jackfruit",
-    price: "₫150,000",
-    image:
-      "https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-    rating: 4.6,
-  },
-];
+type RelatedProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  tags: string[];
+  media: ProductMedia;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  variants: ProductVariant[];
+  categories: ProductCategory[];
+};
 
 export default function ProductDetail() {
   const params = useParams();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentMediaType, setCurrentMediaType] = useState<"image" | "video">(
+    "image"
+  );
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const thumbnailScrollRef = useRef<HTMLDivElement>(null);
@@ -107,6 +116,12 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
+  const [relatedError, setRelatedError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     let isMounted = true;
@@ -151,18 +166,110 @@ export default function ProductDetail() {
     };
   }, [params.id]);
 
+  // Fetch related products when main product is loaded
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchRelatedProducts() {
+      if (!product || !product.categories || product.categories.length === 0)
+        return;
+
+      try {
+        setRelatedLoading(true);
+        setRelatedError(null);
+
+        // Get category IDs from the current product
+        const categoryIds = product.categories.map((cat) => cat.id);
+
+        // Use your backend API structure - build URL with array parameters
+        const params = new URLSearchParams({
+          limit: "6",
+          isActive: "true",
+          includeVariants: "true",
+          includeCategories: "true",
+        });
+
+        // Backend expects categoryIds as an array without transform
+        // Send as repeated query parameters
+        categoryIds.forEach((id) => {
+          params.append("categoryIds", id);
+        });
+
+        const url = `/api/v1/products?${params.toString()}`;
+
+        const res = await fetch(url, { credentials: "include" });
+        if (!res.ok) {
+          const text = (await res.text()) || res.statusText;
+          throw new Error(`${res.status}: ${text}`);
+        }
+
+        const data = await res.json();
+        // Based on your PaginatedProductResponseDto structure
+        const items: RelatedProduct[] = data?.data || [];
+
+        // Filter out the current product and limit to 3 items
+        const filteredItems = items
+          .filter((item) => item.id !== product.id)
+          .slice(0, 3);
+
+        if (isMounted) setRelatedProducts(filteredItems);
+      } catch (e: any) {
+        if (isMounted)
+          setRelatedError(e?.message || "Failed to load related products");
+      } finally {
+        if (isMounted) setRelatedLoading(false);
+      }
+    }
+
+    fetchRelatedProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, [product]);
+
   if (!params.id) {
     return <div>Product not found</div>;
   }
 
   const images: string[] = useMemo(() => {
     if (!product) return [];
-    if (Array.isArray(product.images) && product.images.length > 0) {
-      const arr = product.images as any[];
-      return arr.map((it) => (typeof it === "string" ? it : it.url));
+
+    // Handle new API structure with media.images
+    if (
+      product.media &&
+      product.media.images &&
+      product.media.images.length > 0
+    ) {
+      return product.media.images.map(
+        (img) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${img.url ?? img}`
+      );
     }
-    const fallback = product.mainImageUrl || product.thumbnailUrl;
-    return fallback ? [fallback] : [];
+
+    // // Fallback to legacy structure
+    // if (
+    //   Array.isArray(product.media.images) &&
+    //   product.media.images.length > 0
+    // ) {
+    //   const arr = product.media.images as ProductImage[];
+    //   return arr.map((it) => (typeof it === "string" ? it : it.url ?? it));
+    // }
+
+    // const fallback = product.media.images[0].url || product.media.images[0];
+    // return fallback ? [fallback] : [];
+    return [];
+  }, [product]);
+
+  const videos: string[] = useMemo(() => {
+    if (!product) return [];
+    if (
+      product.media &&
+      product.media.videos &&
+      product.media.videos.length > 0
+    ) {
+      return product.media.videos.map(
+        (video) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${video.url}`
+      );
+    }
+    return [];
   }, [product]);
 
   const [selectedVariantId, setSelectedVariantId] = useState<string>("");
@@ -182,7 +289,8 @@ export default function ProductDetail() {
     );
   }, [product, selectedVariantId]);
 
-  const maxAvailable = selectedVariant?.stockCount ?? product?.stockCount ?? 0;
+  const maxAvailable =
+    selectedVariant?.inventoryQty ?? product?.variants[0].inventoryQty ?? 0;
 
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => {
@@ -211,28 +319,62 @@ export default function ProductDetail() {
 
   const formatPrice = (value?: number | string | null) => {
     if (value === null || value === undefined) return "";
-    if (typeof value === "string") return value;
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(numValue)) return String(value);
     try {
-      return new Intl.NumberFormat("vi-VN", {
+      return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "VND",
-      }).format(value);
+        currency: "USD",
+      }).format(numValue);
     } catch {
-      return String(value);
+      return `$${numValue.toFixed(2)}`;
     }
   };
 
-  const displayPrice = formatPrice(selectedVariant?.price ?? product?.price);
-  const displayOriginalPrice = formatPrice(
-    selectedVariant?.originalPrice ?? product?.originalPrice ?? null
+  const displayPrice = formatPrice(
+    selectedVariant?.retailPrice ?? product?.variants[0].retailPrice
   );
+  // const displayOriginalPrice = formatPrice(product?.variants[0].re ?? null);
+
+  // Helper functions for related products
+  const getRelatedProductPrice = (product: RelatedProduct) => {
+    if (product.variants && product.variants.length > 0) {
+      return product.variants[0].retailPrice;
+    }
+    return null;
+  };
+
+  const getRelatedProductImage = (product: RelatedProduct) => {
+    if (
+      product.media &&
+      product.media.images &&
+      product.media.images.length > 0
+    ) {
+      return `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${product.media.images[0].url}`;
+    }
+    return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
+  };
+
+  const scrollToNewsletter = () => {
+    // Check if we're on the home page
+    if (pathname === "/") {
+      // If on home page, scroll to newsletter section
+      const newsletterSection = document.getElementById("newsletter-section");
+      if (newsletterSection) {
+        newsletterSection.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // If on other pages, navigate to home page with hash
+      router.push("/#newsletter-section");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#e6f5dc]">
       <Navigation variant="fixed" />
 
       {/* Breadcrumb */}
-      <section className="pt-20 py-6 bg-white border-b">
+      <section className="pt-20 py-6 bg-gradient-to-r from-white via-gray-50/30 to-white border-b border-gray-200/50 mt-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Link
@@ -272,72 +414,192 @@ export default function ProductDetail() {
             <div className="text-center text-gray-600">Product not found</div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Product Images */}
-              <div className="space-y-4">
-                {/* Main Image */}
-                <div className="aspect-[4/3] bg-white rounded-2xl overflow-hidden shadow-xl">
-                  {images[0] ? (
-                    <img
-                      src={images[currentImageIndex]}
-                      alt={product.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                      data-testid="img-product-main"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-100" />
-                  )}
+              {/* Product Media */}
+              <div className="space-y-6">
+                {/* Media Type Selector */}
+                {videos.length > 0 && (
+                  <div className="flex items-center justify-center space-x-4 mb-4">
+                    <button
+                      onClick={() => setCurrentMediaType("image")}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        currentMediaType === "image"
+                          ? "bg-viet-green-medium text-white shadow-lg"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      Images ({images.length})
+                    </button>
+                    <button
+                      onClick={() => setCurrentMediaType("video")}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        currentMediaType === "video"
+                          ? "bg-viet-green-medium text-white shadow-lg"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      Videos ({videos.length})
+                    </button>
+                  </div>
+                )}
+
+                {/* Main Media Display */}
+                <div className="relative group">
+                  <div className="aspect-[4/3] bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
+                    {currentMediaType === "image" && images[0] ? (
+                      <>
+                        <img
+                          src={images[currentImageIndex]}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          data-testid="img-product-main"
+                        />
+                        {/* Image overlay with gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        {/* Media counter */}
+                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
+                          {currentImageIndex + 1} / {images.length}
+                        </div>
+
+                        {/* Navigation arrows */}
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              onClick={() =>
+                                setCurrentImageIndex((prev) =>
+                                  prev === 0 ? images.length - 1 : prev - 1
+                                )
+                              }
+                              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100"
+                            >
+                              <ChevronLeft className="h-6 w-6" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                setCurrentImageIndex((prev) =>
+                                  prev === images.length - 1 ? 0 : prev + 1
+                                )
+                              }
+                              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-800 rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100"
+                            >
+                              <ChevronRight className="h-6 w-6" />
+                            </button>
+                          </>
+                        )}
+                      </>
+                    ) : currentMediaType === "video" && videos[0] ? (
+                      <video
+                        src={videos[currentImageIndex] || videos[0]}
+                        controls
+                        className="w-full h-full object-cover"
+                        data-testid="video-product-main"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <div className="text-gray-400 text-center">
+                          <ShoppingCart className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                          <p>No {currentMediaType} available</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Thumbnail Images - Horizontal Scroll */}
-                {images.length > 0 && (
-                  <div className="relative">
-                    {/* Scroll Buttons */}
-                    {images.length > 3 && (
-                      <>
-                        <button
-                          onClick={() => scrollThumbnails("left")}
-                          className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-8 h-8 p-0 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-                          data-testid="button-scroll-left"
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => scrollThumbnails("right")}
-                          className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-8 h-8 p-0 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
-                          data-testid="button-scroll-right"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
-                      </>
-                    )}
+                {/* Thumbnail Media - Enhanced Grid */}
+                {((currentMediaType === "image" && images.length > 1) ||
+                  (currentMediaType === "video" && videos.length > 1)) && (
+                  <div className="space-y-4">
+                    {/* <h4 className="text-lg font-semibold text-gray-800 flex items-center">
+                      <div className="w-1 h-6 bg-gradient-to-b from-viet-green-medium to-viet-earth-gold rounded-full mr-3"></div>
+                      {currentMediaType === "image"
+                        ? `Product Gallery (${images.length} images)`
+                        : `Video Gallery (${videos.length} videos)`}
+                    </h4> */}
+                    <div className="relative">
+                      {/* Scroll Buttons */}
+                      {(currentMediaType === "image"
+                        ? images.length
+                        : videos.length) > 4 && (
+                        <>
+                          <button
+                            onClick={() => scrollThumbnails("left")}
+                            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-10 h-10 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center hover:scale-110"
+                          >
+                            <ChevronLeft className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => scrollThumbnails("right")}
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-10 h-10 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center hover:scale-110"
+                          >
+                            <ChevronRight className="h-5 w-5" />
+                          </button>
+                        </>
+                      )}
 
-                    {/* Thumbnail Container */}
-                    <div
-                      ref={thumbnailScrollRef}
-                      className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-1"
-                      style={{
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
-                      }}
-                    >
-                      {images.map((image: string, index: number) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`flex-shrink-0 w-24 h-24 bg-white rounded-xl overflow-hidden shadow-lg border-2 transition-all duration-300 ${
-                            currentImageIndex === index
-                              ? "border-viet-green-dark scale-105"
-                              : "border-transparent hover:border-gray-300"
-                          }`}
-                          data-testid={`button-thumbnail-${index}`}
-                        >
-                          <img
-                            src={image}
-                            alt={`${product.name} view ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </button>
-                      ))}
+                      {/* Thumbnails Container */}
+                      <div
+                        ref={thumbnailScrollRef}
+                        className="flex gap-4 overflow-x-auto scrollbar-hide px-8"
+                        style={{
+                          scrollbarWidth: "none",
+                          msOverflowStyle: "none",
+                        }}
+                      >
+                        {currentMediaType === "image"
+                          ? images.map((img, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setCurrentImageIndex(index)}
+                                className={`relative flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-3 transition-all duration-300 hover:scale-110 group ${
+                                  index === currentImageIndex
+                                    ? "border-viet-green-medium shadow-xl scale-110 ring-4 ring-viet-green-light"
+                                    : "border-gray-200 hover:border-viet-green-light hover:shadow-lg"
+                                }`}
+                                data-testid={`button-thumbnail-${index}`}
+                              >
+                                <img
+                                  src={img}
+                                  alt={`${product.name} ${index + 1}`}
+                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                                {index === currentImageIndex && (
+                                  <div className="absolute inset-0 bg-viet-green-medium/20 flex items-center justify-center">
+                                    <CheckCircle className="h-6 w-6 text-white drop-shadow-lg" />
+                                  </div>
+                                )}
+                              </button>
+                            ))
+                          : videos.map((video, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setCurrentImageIndex(index)}
+                                className={`relative flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-3 transition-all duration-300 hover:scale-110 group ${
+                                  index === currentImageIndex
+                                    ? "border-viet-green-medium shadow-xl scale-110 ring-4 ring-viet-green-light"
+                                    : "border-gray-200 hover:border-viet-green-light hover:shadow-lg"
+                                }`}
+                                data-testid={`button-video-thumbnail-${index}`}
+                              >
+                                <video
+                                  src={video}
+                                  className="w-full h-full object-cover"
+                                  muted
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                  <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center">
+                                    <div className="w-0 h-0 border-l-[6px] border-l-black border-y-[4px] border-y-transparent ml-1"></div>
+                                  </div>
+                                </div>
+                                {index === currentImageIndex && (
+                                  <div className="absolute inset-0 bg-viet-green-medium/20 flex items-center justify-center">
+                                    <CheckCircle className="h-6 w-6 text-white drop-shadow-lg" />
+                                  </div>
+                                )}
+                              </button>
+                            ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -347,7 +609,7 @@ export default function ProductDetail() {
               <div className="space-y-8">
                 {/* Header */}
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  {/* <div className="flex items-center gap-2 mb-3">
                     {(product.badges || product.tags || []).map(
                       (badge: string, index: number) => (
                         <Badge
@@ -359,21 +621,45 @@ export default function ProductDetail() {
                         </Badge>
                       )
                     )}
+                  </div> */}
+
+                  <div className="space-y-4 mb-8">
+                    <h1
+                      className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-viet-green-dark to-viet-earth-gold bg-clip-text text-transparent mb-4 leading-tight"
+                      data-testid="text-product-name"
+                    >
+                      {product.name}
+                    </h1>
+                    <div className="flex flex-wrap gap-2">
+                      {product.tags?.slice(0, 5).map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                        >
+                          <Leaf className="h-3 w-3 mr-1 text-green-500" />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {product.categories?.map((category) => (
+                        <Badge
+                          key={category.id}
+                          variant="secondary"
+                          className="bg-viet-green-light text-viet-green-dark border-viet-green-medium/30 px-3 py-1 text-sm font-medium"
+                        >
+                          {category.name}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
 
-                  <h1
-                    className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
-                    data-testid="text-product-name"
-                  >
-                    {product.name}
-                  </h1>
-
-                  <p
+                  {/* <p
                     className="text-xl text-gray-600 mb-6"
                     data-testid="text-product-description"
                   >
                     {product.description || ""}
-                  </p>
+                  </p> */}
 
                   {/* Rating */}
                   {/* <div className="flex items-center gap-4 mb-6">
@@ -403,14 +689,14 @@ export default function ProductDetail() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700 font-medium">
-                        {product.variantLabel || "Variant"}:
+                        {product.variants[0].variantName || "Variant"}:
                       </span>
                       {selectedVariant && (
                         <span
                           className="text-gray-900 font-semibold"
                           data-testid="text-selected-variant"
                         >
-                          {selectedVariant.name || selectedVariant.sku}
+                          {selectedVariant.variantName || selectedVariant.sku}
                         </span>
                       )}
                     </div>
@@ -418,7 +704,7 @@ export default function ProductDetail() {
                       {product.variants.map((v: ProductVariant) => {
                         const isSelected =
                           String(selectedVariant?.id) === String(v.id);
-                        const isOut = (v.stockCount ?? 0) <= 0;
+                        const isOut = (v.inventoryQty ?? 0) <= 0;
                         return (
                           <button
                             key={String(v.id)}
@@ -434,7 +720,7 @@ export default function ProductDetail() {
                             } ${isOut ? "opacity-50 cursor-not-allowed" : ""}`}
                             data-testid={`button-variant-${String(v.id)}`}
                           >
-                            {v.name || v.sku}
+                            {v.variantName || v.sku}
                           </button>
                         );
                       })}
@@ -443,35 +729,46 @@ export default function ProductDetail() {
                 ) : null}
 
                 {/* Price */}
-                <div className="bg-gradient-to-r from-viet-green-light to-viet-earth-light p-6 rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    <span
-                      className="text-4xl font-bold text-viet-green-dark"
-                      data-testid="text-product-price"
-                    >
-                      {displayPrice}
-                    </span>
-                    {displayOriginalPrice && (
-                      <span className="text-2xl text-gray-500 line-through">
-                        {displayOriginalPrice}
-                      </span>
+                <div className="bg-gradient-to-r from-viet-green-light to-viet-earth-light p-6 rounded-2xl border border-viet-green-medium/30 shadow-lg">
+                  <div className="text-center space-y-4">
+                    <div className="space-y-2">
+                      <h3 className="text-2xl md:text-3xl font-bold text-viet-green-dark">
+                        Coming Soon
+                      </h3>
+                      <p className="text-gray-600">
+                        This product will be available soon!
+                      </p>
+                    </div>
+
+                    {selectedVariant && (
+                      <div className="flex items-center justify-center gap-6 pt-3 border-t border-gray-200">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Variant</p>
+                          <p className="font-medium text-viet-green-dark">
+                            {selectedVariant.variantName}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Stock</p>
+                          <p className="font-medium text-viet-green-dark">
+                            {selectedVariant.inventoryQty} units
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
-                  {/* <p className="text-viet-green-dark mt-2">
-                    Free shipping on orders over ₫500,000
-                  </p> */}
                 </div>
 
                 {/* Stock & Quantity */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <span className="text-green-600 font-medium">
                       {maxAvailable > 0
                         ? `In Stock (${maxAvailable} available)`
                         : "Out of Stock"}
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="flex items-center gap-4">
                     <span className="text-gray-700 font-medium">Quantity:</span>
@@ -500,40 +797,32 @@ export default function ProductDetail() {
                 {/* Action Buttons */}
                 <div className="space-y-4">
                   <Button
-                    className="w-full bg-viet-green-dark hover:bg-viet-green-medium text-white text-lg py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                    data-testid="button-add-to-cart"
-                    onClick={() => {
-                      console.log("Add to cart", {
-                        productId: product.id,
-                        variantId: selectedVariant?.id,
-                        sku: selectedVariant?.sku,
-                        quantity,
-                      });
-                    }}
-                    disabled={maxAvailable <= 0}
+                    className="w-full bg-gradient-to-r from-viet-earth-gold to-amber-500 hover:from-amber-500 hover:to-viet-earth-gold text-white py-4 rounded-xl text-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    size="lg"
+                    data-testid="button-notify-me"
+                    onClick={scrollToNewsletter}
                   >
-                    <ShoppingCart className="h-6 w-6 mr-3" />
-                    Add to Cart - {displayPrice}
+                    <MessageCircle className="h-6 w-6 mr-3" />
+                    Notify Me When Available
                   </Button>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <Button
                       variant="outline"
-                      className="border-2 border-viet-green-dark text-viet-green-dark hover:bg-viet-green-light py-3"
+                      className="border-viet-green-medium text-viet-green-dark hover:bg-viet-green-light transition-all duration-300"
                       onClick={() => setIsFavorite(!isFavorite)}
-                      data-testid="button-add-to-wishlist"
+                      data-testid="button-add-wishlist"
                     >
                       <Heart
                         className={`h-5 w-5 mr-2 ${
                           isFavorite ? "fill-current text-red-500" : ""
                         }`}
                       />
-                      {isFavorite ? "Favorited" : "Add to Wishlist"}
+                      Wishlist
                     </Button>
-
                     <Button
                       variant="outline"
-                      className="border-2 border-gray-300 text-gray-700 hover:bg-gray-100 py-3"
+                      className="border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-300"
                       data-testid="button-share"
                     >
                       <Share2 className="h-5 w-5 mr-2" />
@@ -576,7 +865,7 @@ export default function ProductDetail() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="description" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-xl">
               <TabsTrigger value="description" className="rounded-lg">
                 Description
               </TabsTrigger>
@@ -598,9 +887,9 @@ export default function ProductDetail() {
                     About This Product
                   </h3>
                   <p className="text-gray-700 leading-relaxed text-lg">
-                    {product?.fullDescription || product?.description || ""}
+                    {product?.description || ""}
                   </p>
-
+                  {/* 
                   <div className="grid md:grid-cols-2 gap-8 mt-8">
                     <div className="bg-viet-green-light/30 p-6 rounded-xl">
                       <h4 className="font-semibold text-gray-900 mb-3">
@@ -648,11 +937,11 @@ export default function ProductDetail() {
                         )}
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </TabsContent>
 
-              <TabsContent value="benefits" className="space-y-6">
+              {/* <TabsContent value="benefits" className="space-y-6">
                 <h3 className="text-2xl font-bold text-gray-900">
                   Health Benefits
                 </h3>
@@ -669,18 +958,7 @@ export default function ProductDetail() {
                     )
                   )}
                 </div>
-
-                {product?.usage && (
-                  <div className="bg-gradient-to-r from-viet-green-light to-viet-earth-light p-8 rounded-2xl mt-8">
-                    <h4 className="font-bold text-xl text-viet-green-dark mb-4">
-                      How to Use
-                    </h4>
-                    <p className="text-gray-700 text-lg leading-relaxed">
-                      {product.usage}
-                    </p>
-                  </div>
-                )}
-              </TabsContent>
+              </TabsContent> */}
 
               <TabsContent value="farmer" className="space-y-6">
                 <div className="bg-gradient-to-r from-viet-green-dark to-viet-green-medium text-white p-8 rounded-2xl">
@@ -688,18 +966,16 @@ export default function ProductDetail() {
                   <div className="grid md:grid-cols-2 gap-8">
                     <div>
                       <h4 className="text-xl font-semibold mb-2">
-                        {product?.farmer?.name || "Our Partner"}
+                        {"Our Partner"}
                       </h4>
-                      <p className="text-viet-green-light mb-1">
-                        {product?.farmer?.location || "Vietnam"}
-                      </p>
+                      <p className="text-viet-green-light mb-1">{"Vietnam"}</p>
                       <p className="text-viet-green-light mb-4">
-                        {product?.farmer?.experience || "Many years"} of
-                        experience
+                        {"Many years"} of experience
                       </p>
                       <p className="text-lg leading-relaxed">
-                        {product?.farmer?.story ||
-                          "Working closely with our network of smallholder farmers across Vietnam."}
+                        {
+                          "Working closely with our network of smallholder farmers across Vietnam."
+                        }
                       </p>
                     </div>
                     <div className="flex items-center justify-center">
@@ -712,17 +988,17 @@ export default function ProductDetail() {
               </TabsContent>
 
               <TabsContent value="reviews" className="space-y-6">
-                <div className="flex items-center justify-between mb-8">
+                {/* <div className="flex items-center justify-between mb-8">
                   <h3 className="text-2xl font-bold text-gray-900">
                     Customer Reviews
                   </h3>
                   <Button className="bg-viet-green-dark hover:bg-viet-green-medium text-white">
                     Write a Review
                   </Button>
-                </div>
+                </div> */}
 
                 {/* Review Summary */}
-                <div className="bg-gray-50 p-8 rounded-2xl">
+                {/* <div className="bg-gray-50 p-8 rounded-2xl">
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="text-center">
                       <div className="text-5xl font-bold text-viet-green-dark mb-2">
@@ -784,10 +1060,10 @@ export default function ProductDetail() {
                       ))}
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Sample Reviews */}
-                <div className="space-y-6">
+                {/* <div className="space-y-6">
                   {[
                     {
                       name: "Linh Nguyen",
@@ -842,7 +1118,7 @@ export default function ProductDetail() {
                       <p className="text-gray-700">{review.comment}</p>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </TabsContent>
             </div>
           </Tabs>
@@ -853,42 +1129,92 @@ export default function ProductDetail() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            You Might Also Like
+            Related Products
+            {product?.categories && product.categories.length > 0 && (
+              <span className="block text-lg font-normal text-gray-600 mt-2">
+                More from "{product.categories[0].name}"
+              </span>
+            )}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedProducts.map((relatedProduct) => (
-              <Link
-                key={relatedProduct.id}
-                href={`/products/${relatedProduct.id}`}
-              >
-                <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={relatedProduct.image}
-                      alt={relatedProduct.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2">
-                      {relatedProduct.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-viet-green-dark">
-                        {relatedProduct.price}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="text-sm text-gray-600">
-                          {relatedProduct.rating}
-                        </span>
+
+          {relatedLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl shadow-lg h-80 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : relatedError ? (
+            <div className="text-center text-red-600 py-8">
+              <p>Failed to load related products</p>
+            </div>
+          ) : relatedProducts.length === 0 ? (
+            <div className="text-center text-gray-600 py-8">
+              <p>No related products found in this category</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {relatedProducts.map((relatedProduct) => (
+                <Link
+                  key={relatedProduct.id}
+                  href={`/products/${relatedProduct.slug || relatedProduct.id}`}
+                >
+                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group">
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={getRelatedProductImage(relatedProduct)}
+                        alt={relatedProduct.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {relatedProduct.categories
+                          ?.slice(0, 2)
+                          .map((category) => (
+                            <span
+                              key={category.id}
+                              className="text-xs bg-viet-green-light text-viet-green-dark px-2 py-1 rounded-full"
+                            >
+                              {category.name}
+                            </span>
+                          ))}
+                      </div>
+                      <h3 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-viet-green-dark transition-colors">
+                        {relatedProduct.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        {relatedProduct.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-xl font-bold text-viet-green-dark">
+                            {formatPrice(
+                              getRelatedProductPrice(relatedProduct)
+                            )}
+                          </span>
+                          {relatedProduct.variants &&
+                            relatedProduct.variants.length > 0 && (
+                              <span className="block text-xs text-gray-500 mt-1">
+                                {relatedProduct.variants[0].variantName}
+                              </span>
+                            )}
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-gray-500">
+                            {relatedProduct.variants?.[0]?.inventoryQty} in
+                            stock
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
