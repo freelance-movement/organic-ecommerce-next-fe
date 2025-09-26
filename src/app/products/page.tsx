@@ -127,25 +127,61 @@ export default function Products() {
         }
         const data = await res.json();
         const items: CategoryItem[] = data?.data || [];
+        
+        console.log("Categories API response:", items);
 
-        // Build parent->children tree based on parentId
-        const topLevel = items.filter((c) => c.parentId === null);
-        const groups: CategoryGroup[] = [
+        // Check for special category that might be a parent (like "By Fruit Type")
+        const specialParent = items.find(item => 
+          item.name === "By Fruit Type" || item.slug === "by-fruit-type");
+        
+        // Create groups with all items as top level if no parentId present in data
+        let groups: CategoryGroup[] = [
           {
             id: "all",
             name: "All Products",
             parent: null,
             children: [],
-          },
-          ...topLevel.map((c) => ({
-            id: c.id,
-            name: c.name,
-            parent: null,
-            children: items
-              .filter((sc) => sc.parentId === c.id)
-              .map((sc) => ({ id: sc.id, name: sc.name })),
-          })),
+          }
         ];
+        
+        if (specialParent) {
+          // If we found a special parent category, use it as a parent for others
+          const childCategories = items.filter(item => 
+            item.id !== specialParent.id);
+          
+          groups.push({
+            id: specialParent.id,
+            name: specialParent.name,
+            parent: null,
+            children: childCategories.map(item => ({ 
+              id: item.id, 
+              name: item.name 
+            })),
+          });
+          
+          // Also add all categories as top-level items
+          items.filter(item => item.id !== specialParent.id)
+            .forEach(item => {
+              groups.push({
+                id: item.id,
+                name: item.name,
+                parent: null,
+                children: [],
+              });
+            });
+        } else {
+          // No special parent found, just add all items as top level
+          items.forEach(item => {
+            groups.push({
+              id: item.id,
+              name: item.name,
+              parent: null,
+              children: [],
+            });
+          });
+        }
+        
+        console.log("Processed categories:", groups);
         if (isMounted) setCategories(groups);
       } catch (e: any) {
         // Keep default All Products if categories fail
@@ -165,24 +201,54 @@ export default function Products() {
       try {
         setLoading(true);
         setError(null);
-        const params = new URLSearchParams({
-          page: String(currentPage),
-          limit: String(productsPerPage),
+        // Build the fetch URL and body
+        let url = "/api/v1/products";
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        
+        // Create the fetch options with query parameters
+        let fetchOptions: RequestInit = {
+          credentials: "include",
+          headers,
+        };
+        
+        // Create query parameters object
+        const queryParams: Record<string, any> = {
+          page: currentPage,
+          limit: productsPerPage,
           sortBy: "createdAt",
           sortOrder: "DESC",
-          isActive: "true",
-          includeVariants: "true",
-          includeCategories: "true",
-        });
-        if (searchQuery.trim()) params.set("search", searchQuery.trim());
-        if (selectedCategory !== "all") {
-          // Backend expects categoryIds as an array without transform
-          // Send as repeated query parameters
-          params.append("categoryIds", selectedCategory);
+          isActive: true,
+          includeVariants: true,
+          includeCategories: true
+        };
+        
+        // Add search query if provided
+        if (searchQuery.trim()) {
+          queryParams.search = searchQuery.trim();
         }
-        const res = await fetch(`/api/v1/products?${params.toString()}`, {
-          credentials: "include",
-        });
+        
+        // Add category ID as an array parameter if selected
+        if (selectedCategory !== "all") {
+          queryParams.categoryIds = [selectedCategory]; // Pass as an array
+        }
+        
+        // Convert to query string
+        const queryString = Object.entries(queryParams)
+          .map(([key, value]) => {
+            if (Array.isArray(value)) {
+              // Handle array parameters - use proper encoding for arrays
+              return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+            }
+            return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+          })
+          .join('&');
+        
+        // Build final URL
+        url = `${url}?${queryString}`;
+        console.log("API Request URL:", url);
+        const res = await fetch(url, fetchOptions);
         if (!res.ok) {
           const text = (await res.text()) || res.statusText;
           throw new Error(`${res.status}: ${text}`);
