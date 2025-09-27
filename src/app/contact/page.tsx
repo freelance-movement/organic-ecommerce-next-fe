@@ -156,7 +156,6 @@ export default function Contact() {
           } catch {}
         }
         if (isMounted) {
-          console.log("Contact data from API:", data);
           setContact(data);
         }
       } catch (e: any) {

@@ -108,7 +108,6 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log("HERE", process.env.NEXT_PUBLIC_BACKEND_ORIGIN);
 
   // Fetch categories once
   useEffect(() => {
@@ -128,7 +127,6 @@ export default function Products() {
         const data = await res.json();
         const items: CategoryItem[] = data?.data || [];
         
-        console.log("Categories API response:", items);
 
         // Check for special category that might be a parent (like "By Fruit Type")
         const specialParent = items.find(item => 
@@ -181,7 +179,6 @@ export default function Products() {
           });
         }
         
-        console.log("Processed categories:", groups);
         if (isMounted) setCategories(groups);
       } catch (e: any) {
         // Keep default All Products if categories fail
@@ -247,7 +244,6 @@ export default function Products() {
         
         // Build final URL
         url = `${url}?${queryString}`;
-        console.log("API Request URL:", url);
         const res = await fetch(url, fetchOptions);
         if (!res.ok) {
           const text = (await res.text()) || res.statusText;
