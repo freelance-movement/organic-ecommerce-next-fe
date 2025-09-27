@@ -127,6 +127,13 @@ export default function ContactPageClient() {
     subject: "",
     message: "",
   });
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    phone: "",
+    message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -171,9 +178,80 @@ export default function ContactPageClient() {
     };
   }, []);
 
+  const validateMessage = (message: string): string => {
+    const charCount = message.trim().length;
+    if (charCount < 10) {
+      return `Message must be at least 10 characters. Current: ${charCount} characters.`;
+    }
+    if (charCount > 1000) {
+      return `Message must not exceed 1000 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateName = (name: string): string => {
+    const charCount = name.trim().length;
+    if (charCount > 100) {
+      return `Name must not exceed 100 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateEmail = (email: string): string => {
+    const charCount = email.trim().length;
+    if (charCount > 254) {
+      return `Email must not exceed 254 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateSubject = (subject: string): string => {
+    const charCount = subject.trim().length;
+    if (charCount > 200) {
+      return `Subject must not exceed 200 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validatePhone = (phone: string): string => {
+    const charCount = phone.trim().length;
+    if (charCount > 0 && charCount > 20) {
+      return `Phone number must not exceed 20 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
+    
+    // Validate all fields
+    const nameError = validateName(formData.name);
+    const emailError = validateEmail(formData.email);
+    const subjectError = validateSubject(formData.subject);
+    const phoneError = validatePhone(formData.phone);
+    const messageError = validateMessage(formData.message);
+    
+    const errors = {
+      name: nameError,
+      email: emailError,
+      subject: subjectError,
+      phone: phoneError,
+      message: messageError,
+    };
+    
+    setFormErrors(errors);
+    
+    const hasErrors = Object.values(errors).some(error => error !== "");
+    if (hasErrors) {
+      toast({
+        title: "Validation Error",
+        description: "Please fix the errors in the form before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       const res = await fetch(`/api/v1/customer-inquiries`, {
@@ -213,10 +291,23 @@ export default function ContactPageClient() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { name, value } = e.target;
+    
+    // Apply character limits
+    let limitedValue = value;
+    if (name === "name" && value.length > 100) limitedValue = value.slice(0, 100);
+    if (name === "email" && value.length > 254) limitedValue = value.slice(0, 254);
+    if (name === "subject" && value.length > 200) limitedValue = value.slice(0, 200);
+    if (name === "phone" && value.length > 20) limitedValue = value.slice(0, 20);
+    if (name === "message" && value.length > 1000) limitedValue = value.slice(0, 1000);
+    
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: limitedValue,
     }));
+    
+    // Clear validation errors when user starts typing
+    setFormErrors(prev => ({ ...prev, [name]: "" }));
   };
 
   return (
@@ -410,15 +501,26 @@ export default function ContactPageClient() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={100}
+                    className={`w-full border-2 ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     placeholder="Enter your full name"
                     data-testid="input-contact-name"
                   />
+                  <div className="flex justify-between items-center">
+                    {formErrors.name && (
+                      <p className="text-red-500 text-sm" data-testid="error-name-validation">
+                        {formErrors.name}
+                      </p>
+                    )}
+                    <p className={`text-sm ml-auto ${formData.name.length > 90 ? 'text-orange-500' : 'text-gray-500'}`}>
+                      {formData.name.length}/100
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Email Address *
+                    Email Address * 
                   </label>
                   <Input
                     type="email"
@@ -426,10 +528,16 @@ export default function ContactPageClient() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={254}
+                    className={`w-full border-2 ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     placeholder="Enter your email address"
                     data-testid="input-contact-email"
                   />
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm" data-testid="error-email-validation">
+                      {formErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -443,15 +551,28 @@ export default function ContactPageClient() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={20}
+                    className={`w-full border-2 ${formErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     placeholder="Enter your phone number"
                     data-testid="input-contact-phone"
                   />
+                  <div className="flex justify-between items-center">
+                    {formErrors.phone && (
+                      <p className="text-red-500 text-sm" data-testid="error-phone-validation">
+                        {formErrors.phone}
+                      </p>
+                    )}
+                    {formData.phone.length > 0 && (
+                      <p className={`text-sm ml-auto ${formData.phone.length > 18 ? 'text-orange-500' : 'text-gray-500'}`}>
+                        {formData.phone.length}/20
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Subject *
+                    Subject * 
                   </label>
                   <Input
                     type="text"
@@ -459,16 +580,27 @@ export default function ContactPageClient() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={200}
+                    className={`w-full border-2 ${formErrors.subject ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     placeholder="What's this about?"
                     data-testid="input-contact-subject"
                   />
+                  <div className="flex justify-between items-center">
+                    {formErrors.subject && (
+                      <p className="text-red-500 text-sm" data-testid="error-subject-validation">
+                        {formErrors.subject}
+                      </p>
+                    )}
+                    <p className={`text-sm ml-auto ${formData.subject.length > 180 ? 'text-orange-500' : 'text-gray-500'}`}>
+                      {formData.subject.length}/200
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Message *
+                  Message * 
                 </label>
                 <Textarea
                   name="message"
@@ -476,10 +608,25 @@ export default function ContactPageClient() {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300 resize-none"
+                  maxLength={1000}
+                  className={`w-full border-2 ${formErrors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300 resize-none`}
                   placeholder="Tell us how we can help you..."
                   data-testid="textarea-contact-message"
                 />
+                <div className="flex justify-between items-center">
+                  {formErrors.message && (
+                    <p className="text-red-500 text-sm" data-testid="error-message-validation">
+                      {formErrors.message}
+                    </p>
+                  )}
+                  <p className={`text-sm ml-auto ${
+                    formData.message.trim().length < 10 ? 'text-red-500' :
+                    formData.message.length > 900 ? 'text-orange-500' :
+                    formData.message.trim().length >= 10 ? 'text-viet-green-medium' : 'text-gray-500'
+                  }`}>
+                    {formData.message.length}/1000 characters
+                  </p>
+                </div>
               </div>
 
               <div className="text-center pt-4">

@@ -44,10 +44,63 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
   const { toast } = useToast();
+
+  // Validation functions
+  const validateName = (name: string): string => {
+    const charCount = name.trim().length;
+    if (charCount > 100) {
+      return `Name must not exceed 100 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateEmail = (email: string): string => {
+    const charCount = email.trim().length;
+    if (charCount > 254) {
+      return `Email must not exceed 254 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validatePhone = (phone: string): string => {
+    const charCount = phone.trim().length;
+    if (charCount > 0 && charCount > 20) {
+      return `Phone number must not exceed 20 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
 
   // Client-side form handler
   async function clientAction(formData: FormData) {
+    // Validate all fields
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const phoneError = validatePhone(phone);
+    
+    const errors = {
+      name: nameError,
+      email: emailError,
+      phone: phoneError,
+    };
+    
+    setFormErrors(errors);
+    
+    const hasErrors = Object.values(errors).some(error => error !== "");
+    if (hasErrors) {
+      toast({
+        title: "Validation Error",
+        description: "Please fix the errors in the form before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const result = await subscribeToNewsletter(formData);
     
     if (result.success) {
@@ -60,6 +113,7 @@ export default function NewsletterSignup() {
       setEmail("");
       setName("");
       setPhone("");
+      setFormErrors({ name: "", email: "", phone: "" });
     } else {
       toast({
         title: "Subscription failed",
@@ -108,7 +162,7 @@ export default function NewsletterSignup() {
             <form action={clientAction} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="group relative">
-                  <label htmlFor="name" className="sr-only">Your full name</label>
+                  <label htmlFor="name" className="sr-only">Your full name (max 100 characters)</label>
                   <User 
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors duration-300 group-focus-within:text-viet-green-medium" 
                     aria-hidden="true"
@@ -119,14 +173,28 @@ export default function NewsletterSignup() {
                     name="name"
                     placeholder="Your full name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border border-white/30 rounded-xl transition-all duration-300 focus:bg-white focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 hover:bg-white/95"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const limitedValue = value.length > 100 ? value.slice(0, 100) : value;
+                      setName(limitedValue);
+                      setFormErrors(prev => ({ ...prev, name: "" }));
+                    }}
+                    maxLength={100}
+                    className={`pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-white/30 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl transition-all duration-300 focus:bg-white hover:bg-white/95`}
                     data-testid="input-newsletter-name"
                   />
+                  <div className="mt-1 flex justify-between items-center">
+                    {formErrors.name && (
+                      <p className="text-red-300 text-xs" data-testid="error-newsletter-name">
+                        {formErrors.name}
+                      </p>
+                    )}
+                    
+                  </div>
                 </div>
 
                 <div className="group relative">
-                  <label htmlFor="email" className="sr-only">Your email address</label>
+                  <label htmlFor="email" className="sr-only">Your email address </label>
                   <Mail 
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 transition-colors duration-300 group-focus-within:text-viet-green-medium" 
                     aria-hidden="true"
@@ -137,12 +205,23 @@ export default function NewsletterSignup() {
                     name="email"
                     placeholder="Your email address"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const limitedValue = value.length > 254 ? value.slice(0, 254) : value;
+                      setEmail(limitedValue);
+                      setFormErrors(prev => ({ ...prev, email: "" }));
+                    }}
                     required
-                    className="pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border border-white/30 rounded-xl transition-all duration-300 focus:bg-white focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 hover:bg-white/95"
+                    maxLength={254}
+                    className={`pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-white/30 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl transition-all duration-300 focus:bg-white hover:bg-white/95`}
                     data-testid="input-newsletter-email"
                     aria-required="true"
                   />
+                  {formErrors.email && (
+                    <p className="text-red-300 text-xs mt-1" data-testid="error-newsletter-email">
+                      {formErrors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="group relative">
@@ -157,10 +236,24 @@ export default function NewsletterSignup() {
                     name="phone"
                     placeholder="Your phone number"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border border-white/30 rounded-xl transition-all duration-300 focus:bg-white focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 hover:bg-white/95"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const limitedValue = value.length > 20 ? value.slice(0, 20) : value;
+                      setPhone(limitedValue);
+                      setFormErrors(prev => ({ ...prev, phone: "" }));
+                    }}
+                    maxLength={20}
+                    className={`pl-12 py-4 bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 border ${formErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-white/30 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl transition-all duration-300 focus:bg-white hover:bg-white/95`}
                     data-testid="input-newsletter-phone"
                   />
+                  <div className="mt-1 flex justify-between items-center">
+                    {formErrors.phone && (
+                      <p className="text-red-300 text-xs" data-testid="error-newsletter-phone">
+                        {formErrors.phone}
+                      </p>
+                    )}
+                    
+                  </div>
                 </div>
               </div>
 

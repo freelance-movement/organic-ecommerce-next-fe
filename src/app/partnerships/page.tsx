@@ -60,12 +60,91 @@ export default function Partnerships() {
     partnershipType: "",
     message: "",
   });
+  const [formErrors, setFormErrors] = useState({
+    company: "",
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Validation functions
+  const validateCompany = (company: string): string => {
+    const charCount = company.trim().length;
+    if (charCount > 150) {
+      return `Company name must not exceed 150 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateName = (name: string): string => {
+    const charCount = name.trim().length;
+    if (charCount > 100) {
+      return `Name must not exceed 100 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateEmail = (email: string): string => {
+    const charCount = email.trim().length;
+    if (charCount > 254) {
+      return `Email must not exceed 254 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validatePhone = (phone: string): string => {
+    const charCount = phone.trim().length;
+    if (charCount > 0 && charCount > 20) {
+      return `Phone number must not exceed 20 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
+
+  const validateMessage = (message: string): string => {
+    const charCount = message.trim().length;
+    if (charCount > 0 && charCount < 10) {
+      return `Message must be at least 10 characters. Current: ${charCount} characters.`;
+    }
+    if (charCount > 1000) {
+      return `Message must not exceed 1000 characters. Current: ${charCount} characters.`;
+    }
+    return "";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    // Validate all fields
+    const companyError = validateCompany(formData.company);
+    const nameError = validateName(formData.name);
+    const emailError = validateEmail(formData.email);
+    const phoneError = validatePhone(formData.phone);
+    const messageError = validateMessage(formData.message);
+
+    const errors = {
+      company: companyError,
+      name: nameError,
+      email: emailError,
+      phone: phoneError,
+      message: messageError,
+    };
+
+    setFormErrors(errors);
+
+    const hasErrors = Object.values(errors).some(error => error !== "");
+    if (hasErrors) {
+      toast({
+        title: "Validation Error",
+        description: "Please fix the errors in the form before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -105,6 +184,13 @@ export default function Partnerships() {
         partnershipType: "",
         message: "",
       });
+      setFormErrors({
+        company: "",
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
     } catch (error: any) {
       toast({
         title: "Failed to send inquiry",
@@ -121,10 +207,23 @@ export default function Partnerships() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
+    const { name, value } = e.target;
+    
+    // Apply character limits
+    let limitedValue = value;
+    if (name === "company" && value.length > 150) limitedValue = value.slice(0, 150);
+    if (name === "name" && value.length > 100) limitedValue = value.slice(0, 100);
+    if (name === "email" && value.length > 254) limitedValue = value.slice(0, 254);
+    if (name === "phone" && value.length > 20) limitedValue = value.slice(0, 20);
+    if (name === "message" && value.length > 1000) limitedValue = value.slice(0, 1000);
+    
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: limitedValue,
     }));
+    
+    // Clear validation errors when user starts typing
+    setFormErrors(prev => ({ ...prev, [name]: "" }));
   };
 
   return (
@@ -353,9 +452,15 @@ export default function Partnerships() {
                     value={formData.company}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={150}
+                    className={`w-full border-2 ${formErrors.company ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-company"
                   />
+                  {formErrors.company && (
+                    <p className="text-red-500 text-sm mt-1" data-testid="error-company-validation">
+                      {formErrors.company}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -368,16 +473,22 @@ export default function Partnerships() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={100}
+                    className={`w-full border-2 ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-name"
                   />
+                  {formErrors.name && (
+                    <p className="text-red-500 text-sm mt-1" data-testid="error-name-validation">
+                      {formErrors.name}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email *
+                    Email * 
                   </label>
                   <Input
                     type="email"
@@ -385,9 +496,15 @@ export default function Partnerships() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={254}
+                    className={`w-full border-2 ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-email"
                   />
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm mt-1" data-testid="error-email-validation">
+                      {formErrors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -399,9 +516,15 @@ export default function Partnerships() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                    maxLength={20}
+                    className={`w-full border-2 ${formErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-phone"
                   />
+                  {formErrors.phone && (
+                    <p className="text-red-500 text-sm mt-1" data-testid="error-phone-validation">
+                      {formErrors.phone}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -430,17 +553,23 @@ export default function Partnerships() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
+                  Message 
                 </label>
                 <Textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full border-2 border-gray-200 focus:border-viet-green-medium focus:ring-2 focus:ring-viet-green-medium/20 rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300"
+                  maxLength={1000}
+                  className={`w-full border-2 ${formErrors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                   placeholder="Tell us about your business and partnership goals..."
                   data-testid="textarea-message"
                 />
+                {formErrors.message && (
+                  <p className="text-red-500 text-sm mt-1" data-testid="error-message-validation">
+                    {formErrors.message}
+                  </p>
+                )}
               </div>
 
               <div className="text-center">
