@@ -1,6 +1,47 @@
+import { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Leaf, Users, Award, Heart, MapPin, TrendingUp } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Our Impact - Supporting Vietnamese Farmers & Sustainable Agriculture",
+  description: "Discover how VietRoot supports over 150+ Vietnamese organic farmers, promotes sustainable agriculture, and preserves traditional farming practices. See our community impact, environmental benefits, and cultural preservation efforts.",
+  keywords: [
+    "Vietnamese farmers support",
+    "sustainable agriculture Vietnam",
+    "organic farming impact",
+    "community development Vietnam",
+    "traditional farming preservation",
+    "environmental impact Vietnam",
+    "farmer partnership program",
+    "sustainable development goals",
+    "rural development Vietnam",
+    "organic certification Vietnam"
+  ],
+  openGraph: {
+    title: "Our Impact - Supporting Vietnamese Farmers & Sustainable Agriculture",
+    description: "Discover how VietRoot supports over 150+ Vietnamese organic farmers and promotes sustainable agriculture while preserving traditional farming practices.",
+    url: "https://vietroot.com/impact",
+    type: "website",
+    images: [
+      {
+        url: "/og-impact.jpg",
+        width: 1200,
+        height: 630,
+        alt: "VietRoot Impact - Supporting Vietnamese Farmers",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Impact - Supporting Vietnamese Farmers & Sustainable Agriculture",
+    description: "Discover how VietRoot supports over 150+ Vietnamese organic farmers and promotes sustainable agriculture.",
+    images: ["/og-impact.jpg"],
+  },
+  alternates: {
+    canonical: "https://vietroot.com/impact",
+  },
+};
 
 const farmerStories = [
   {
