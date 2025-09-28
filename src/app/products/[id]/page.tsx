@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
+import ProductDescription from "./components/ProductDescription";
 
 type ProductVariant = {
   id: string;
@@ -240,7 +241,7 @@ export default function ProductDetail() {
       product.media.images.length > 0
     ) {
       return product.media.images.map(
-        (img) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${img.url ?? img}`
+        (img) => `${img.url ?? img}`
       );
     }
 
@@ -266,7 +267,7 @@ export default function ProductDetail() {
       product.media.videos.length > 0
     ) {
       return product.media.videos.map(
-        (video) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${video.url}`
+        (video) => `${video.url}`
       );
     }
     return [];
@@ -350,7 +351,7 @@ export default function ProductDetail() {
       product.media.images &&
       product.media.images.length > 0
     ) {
-      return `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${product.media.images[0].url}`;
+      return `${product.media.images[0].url}`;
     }
     return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
   };
@@ -883,12 +884,10 @@ export default function ProductDetail() {
             <div className="mt-12">
               <TabsContent value="description" className="space-y-8">
                 <div className="prose prose-lg max-w-none">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
                     About This Product
                   </h3>
-                  <p className="text-gray-700 leading-relaxed text-lg">
-                    {product?.description || ""}
-                  </p>
+                  <ProductDescription content={product?.description} />
                   {/* 
                   <div className="grid md:grid-cols-2 gap-8 mt-8">
                     <div className="bg-viet-green-light/30 p-6 rounded-xl">

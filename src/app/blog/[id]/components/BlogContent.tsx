@@ -167,7 +167,7 @@ const useRenderNode = () => {
 
         // Fix image URLs
         if (imageSrc) {
-          imageSrc = `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${imageSrc}`;
+          imageSrc = `${imageSrc}`;
         }
 
         const imageStyle: React.CSSProperties = {
@@ -457,7 +457,7 @@ const renderNodeImpl = (node: any, key?: number): React.ReactNode => {
 
       // Fix image URLs
       if (imageSrc) {
-        imageSrc = `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${imageSrc}`;
+        imageSrc = `${imageSrc}`;
       }
 
       const imageStyle: React.CSSProperties = {
