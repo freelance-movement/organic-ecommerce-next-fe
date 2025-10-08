@@ -158,11 +158,6 @@ export default function RootLayout({
         <GoogleAnalytics />
         {children}
         <Toaster />
-        <script
-          async
-          src="https://intern-chatbot-api.zodinet.tech/widget.js"
-          data-client-key="70f9239c-a6e9-43c3-b340-379779493591"
-        ></script>
       </body>
     </html>
   );

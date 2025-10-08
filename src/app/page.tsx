@@ -12,8 +12,10 @@ import Navigation from "@/components/Navigation";
 import { ScrollToNewsletter } from "@/components/ScrollToNewsletter";
 
 export const metadata: Metadata = {
-  title: "VietRoot - Premium Vietnamese Organic Products | Authentic Natural Foods from Local Farmers",
-  description: "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods. Direct from trusted local farmers, delivered worldwide with sustainable farming practices.",
+  title:
+    "VietRoot - Premium Vietnamese Organic Products | Authentic Natural Foods from Local Farmers",
+  description:
+    "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods. Direct from trusted local farmers, delivered worldwide with sustainable farming practices.",
   keywords: [
     "Vietnamese organic products",
     "premium Vietnamese rice",
@@ -24,11 +26,12 @@ export const metadata: Metadata = {
     "local Vietnamese farmers",
     "organic ecommerce Vietnam",
     "traditional Vietnamese products",
-    "healthy Vietnamese food"
+    "healthy Vietnamese food",
   ],
   openGraph: {
     title: "VietRoot - Premium Vietnamese Organic Products",
-    description: "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods. Direct from trusted local farmers.",
+    description:
+      "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods. Direct from trusted local farmers.",
     url: "https://vietroot.com",
     type: "website",
     images: [
@@ -43,7 +46,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "VietRoot - Premium Vietnamese Organic Products",
-    description: "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods.",
+    description:
+      "Discover the finest Vietnamese organic products: premium rice, authentic tea, natural spices, fresh fruits and traditional foods.",
     images: ["/og-home.jpg"],
   },
   alternates: {
@@ -55,7 +59,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#e6f5dc]">
       <Navigation variant="absolute" />
-      
+
       <main>
         {/* Structured Data for LocalBusiness */}
         <script
@@ -65,58 +69,71 @@ export default function Home() {
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
               "@id": "https://vietroot.com/#business",
-              "name": "VietRoot",
-              "image": "https://vietroot.com/logo.png",
-              "description": "Premium Vietnamese organic products from trusted local farmers including rice, tea, spices, fruits and traditional foods.",
-              "url": "https://vietroot.com",
-              "telephone": "+84-xxx-xxx-xxx",
-              "priceRange": "$$",
-              "address": {
+              name: "VietRoot",
+              image: "https://vietroot.com/logo.png",
+              description:
+                "Premium Vietnamese organic products from trusted local farmers including rice, tea, spices, fruits and traditional foods.",
+              url: "https://vietroot.com",
+              telephone: "+84-xxx-xxx-xxx",
+              priceRange: "$$",
+              address: {
                 "@type": "PostalAddress",
-                "addressCountry": "Vietnam"
+                addressCountry: "Vietnam",
               },
-              "geo": {
+              geo: {
                 "@type": "GeoCoordinates",
-                "latitude": 14.0583,
-                "longitude": 108.2772
+                latitude: 14.0583,
+                longitude: 108.2772,
               },
-              "openingHoursSpecification": [
+              openingHoursSpecification: [
                 {
                   "@type": "OpeningHoursSpecification",
-                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                  "opens": "08:00",
-                  "closes": "18:00"
-                }
+                  dayOfWeek: [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                  ],
+                  opens: "08:00",
+                  closes: "18:00",
+                },
               ],
-              "sameAs": [
+              sameAs: [
                 "https://facebook.com/vietroot",
-                "https://instagram.com/vietroot"
-              ]
-            })
+                "https://instagram.com/vietroot",
+              ],
+            }),
           }}
         />
-        
+
         <HeroSection />
-        
+
         <QuickIntro />
-        
+
         <Suspense fallback={<FeaturedProductsSkeleton />}>
           <FeaturedProducts />
         </Suspense>
-        
+
         <OurFarm />
-        
+
         <MissionVision />
-        
+
         <NewsletterSignup />
-        
+
         <CallToActionBlocks />
       </main>
-      
+
       <Footer />
-      
+
       {/* Client component for handling hash navigation */}
       <ScrollToNewsletter />
+
+      <script
+        async
+        src="https://intern-chatbot-api.zodinet.tech/widget.js"
+        data-client-key="70f9239c-a6e9-43c3-b340-379779493591"
+      ></script>
     </div>
   );
 }
@@ -131,7 +148,7 @@ function FeaturedProductsSkeleton() {
           <div className="h-8 w-64 bg-gray-200 mx-auto mb-4 rounded"></div>
           <div className="h-4 w-96 bg-gray-200 mx-auto rounded"></div>
         </div>
-        
+
         <div className="bg-white rounded-2xl shadow-xl p-8 animate-pulse">
           <div className="h-6 w-48 bg-gray-200 mb-6 rounded"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
