@@ -87,9 +87,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
+      {/* <head>
         <link rel="preload" as="image" href="/bg-fruit4.jpg" />
-      </head>
+      </head> */}
       <head>
         <link rel="canonical" href={seoConfig.baseUrl} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
