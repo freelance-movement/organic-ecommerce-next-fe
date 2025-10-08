@@ -159,7 +159,7 @@ export default function FeaturedProducts() {
 
   const pickImage = (p: BackendProduct) => {
     if (p.media && p.media.images && p.media.images.length > 0) {
-      return `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${
+      return `${
         p.media.images[0].url ?? p.media.images[0]
       }`;
     }

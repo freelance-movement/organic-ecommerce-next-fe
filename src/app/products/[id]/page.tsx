@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
+import ProductDescription from "./components/ProductDescription";
 
 type ProductVariant = {
   id: string;
@@ -240,7 +241,7 @@ export default function ProductDetail() {
       product.media.images.length > 0
     ) {
       return product.media.images.map(
-        (img) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${img.url ?? img}`
+        (img) => `${img.url ?? img}`
       );
     }
 
@@ -266,7 +267,7 @@ export default function ProductDetail() {
       product.media.videos.length > 0
     ) {
       return product.media.videos.map(
-        (video) => `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${video.url}`
+        (video) => `${video.url}`
       );
     }
     return [];
@@ -350,7 +351,7 @@ export default function ProductDetail() {
       product.media.images &&
       product.media.images.length > 0
     ) {
-      return `${process.env.NEXT_PUBLIC_BACKEND_ORIGIN}${product.media.images[0].url}`;
+      return `${product.media.images[0].url}`;
     }
     return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
   };
@@ -646,7 +647,7 @@ export default function ProductDetail() {
                         <Badge
                           key={category.id}
                           variant="secondary"
-                          className="bg-viet-green-light text-viet-green-dark border-viet-green-medium/30 px-3 py-1 text-sm font-medium"
+                          className="bg-viet-green-light text-white border-viet-green-medium/30 px-3 py-1 text-sm font-medium"
                         >
                           {category.name}
                         </Badge>
@@ -686,21 +687,21 @@ export default function ProductDetail() {
 
                 {/* Variant Selector */}
                 {product?.variants?.length ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700 font-medium">
-                        {product.variants[0].variantName || "Variant"}:
+                      <span className="text-gray-900 font-bold text-lg">
+                        Select Variant:
                       </span>
                       {selectedVariant && (
                         <span
-                          className="text-gray-900 font-semibold"
+                          className="text-emerald-700 font-bold bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200"
                           data-testid="text-selected-variant"
                         >
                           {selectedVariant.variantName || selectedVariant.sku}
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {product.variants.map((v: ProductVariant) => {
                         const isSelected =
                           String(selectedVariant?.id) === String(v.id);
@@ -715,12 +716,13 @@ export default function ProductDetail() {
                             disabled={isOut}
                             className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
                               isSelected
-                                ? "border-viet-green-dark bg-viet-green-light text-viet-green-dark"
-                                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                                ? "border-viet-green-dark bg-viet-green-light text-white"
+                                : "border-gray-300 bg-white hover:bg-gray-50  text-viet-green-dark"
                             } ${isOut ? "opacity-50 cursor-not-allowed" : ""}`}
                             data-testid={`button-variant-${String(v.id)}`}
                           >
                             {v.variantName || v.sku}
+                            {isOut && <span className="block text-xs text-red-500 mt-1">Out of stock</span>}
                           </button>
                         );
                       })}
@@ -729,28 +731,28 @@ export default function ProductDetail() {
                 ) : null}
 
                 {/* Price */}
-                <div className="bg-gradient-to-r from-viet-green-light to-viet-earth-light p-6 rounded-2xl border border-viet-green-medium/30 shadow-lg">
+                <div className="bg-white p-6 rounded-2xl border-2 border-orange-200 shadow-lg">
                   <div className="text-center space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-2xl md:text-3xl font-bold text-viet-green-dark">
+                      <h3 className="text-2xl md:text-3xl font-bold text-orange-600">
                         Coming Soon
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-800 font-medium">
                         This product will be available soon!
                       </p>
                     </div>
 
                     {selectedVariant && (
-                      <div className="flex items-center justify-center gap-6 pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-center gap-6 pt-3 border-t border-orange-200">
                         <div className="text-center">
-                          <p className="text-sm text-gray-500">Variant</p>
-                          <p className="font-medium text-viet-green-dark">
+                          <p className="text-sm font-semibold text-gray-700">Variant</p>
+                          <p className="font-bold text-gray-900">
                             {selectedVariant.variantName}
                           </p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-500">Stock</p>
-                          <p className="font-medium text-viet-green-dark">
+                          <p className="text-sm font-semibold text-gray-700">Stock</p>
+                          <p className="font-bold text-green-600">
                             {selectedVariant.inventoryQty} units
                           </p>
                         </div>
@@ -771,7 +773,7 @@ export default function ProductDetail() {
                   </div> */}
 
                   <div className="flex items-center gap-4">
-                    <span className="text-gray-700 font-medium">Quantity:</span>
+                    <span className="text-gray-900 font-bold">Quantity:</span>
                     <div className="flex items-center border border-gray-300 rounded-lg">
                       <button
                         onClick={() => handleQuantityChange(-1)}
@@ -780,7 +782,7 @@ export default function ProductDetail() {
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="px-4 py-2 min-w-[3rem] text-center font-medium">
+                      <span className="px-4 py-2 min-w-[3rem] text-center font-bold text-gray-900">
                         {quantity}
                       </span>
                       <button
@@ -809,50 +811,50 @@ export default function ProductDetail() {
                   <div className="grid grid-cols-2 gap-3">
                     <Button
                       variant="outline"
-                      className="border-viet-green-medium text-viet-green-dark hover:bg-viet-green-light transition-all duration-300"
+                      className="border-2 border-green-500 text-green-700 font-semibold hover:bg-green-50 transition-all duration-300"
                       onClick={() => setIsFavorite(!isFavorite)}
                       data-testid="button-add-wishlist"
                     >
                       <Heart
                         className={`h-5 w-5 mr-2 ${
-                          isFavorite ? "fill-current text-red-500" : ""
+                          isFavorite ? "fill-current text-red-500" : "text-green-600"
                         }`}
                       />
                       Wishlist
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-300"
+                      className="border-2 border-blue-500 text-blue-700 font-semibold hover:bg-blue-50 transition-all duration-300"
                       data-testid="button-share"
                     >
-                      <Share2 className="h-5 w-5 mr-2" />
+                      <Share2 className="h-5 w-5 mr-2 text-blue-600" />
                       Share
                     </Button>
                   </div>
                 </div>
 
                 {/* Trust Indicators */}
-                <div className="grid grid-cols-3 gap-4 py-6 border-t border-gray-200">
+                <div className="grid grid-cols-3 gap-4 py-6 border-t-2 border-orange-200 bg-gray-50 rounded-lg">
                   <div className="text-center">
-                    <Truck className="h-8 w-8 text-viet-green-dark mx-auto mb-2" />
-                    <p className="text-sm font-medium text-gray-700">
+                    <Truck className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-gray-900">
                       Free Shipping
                     </p>
-                    <p className="text-xs text-gray-500">Orders over ₫500k</p>
+                    <p className="text-xs font-semibold text-gray-700">Orders over ₫500k</p>
                   </div>
                   <div className="text-center">
-                    <Shield className="h-8 w-8 text-viet-green-dark mx-auto mb-2" />
-                    <p className="text-sm font-medium text-gray-700">
+                    <Shield className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-gray-900">
                       Secure Payment
                     </p>
-                    <p className="text-xs text-gray-500">SSL Protected</p>
+                    <p className="text-xs font-semibold text-gray-700">SSL Protected</p>
                   </div>
                   <div className="text-center">
-                    <Award className="h-8 w-8 text-viet-green-dark mx-auto mb-2" />
-                    <p className="text-sm font-medium text-gray-700">
+                    <Award className="h-8 w-8 text-orange-600 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-gray-900">
                       Quality Guarantee
                     </p>
-                    <p className="text-xs text-gray-500">100% Organic</p>
+                    <p className="text-xs font-semibold text-gray-700">100% Organic</p>
                   </div>
                 </div>
               </div>
@@ -883,12 +885,10 @@ export default function ProductDetail() {
             <div className="mt-12">
               <TabsContent value="description" className="space-y-8">
                 <div className="prose prose-lg max-w-none">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
                     About This Product
                   </h3>
-                  <p className="text-gray-700 leading-relaxed text-lg">
-                    {product?.description || ""}
-                  </p>
+                  <ProductDescription content={product?.description} />
                   {/* 
                   <div className="grid md:grid-cols-2 gap-8 mt-8">
                     <div className="bg-viet-green-light/30 p-6 rounded-xl">

@@ -1,6 +1,47 @@
+import { Metadata } from "next";
 import Footer from "@/components/Footer";
 import { Users, Target, Clock, Heart } from "lucide-react";
 import Navigation from "@/components/Navigation";
+
+export const metadata: Metadata = {
+  title: "About VietRoot - Our Story & Vietnamese Organic Farming Heritage",
+  description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships, cultural heritage, and mission to share Vietnam's finest organic products worldwide.",
+  keywords: [
+    "VietRoot story",
+    "Vietnamese organic farming",
+    "sustainable agriculture Vietnam",
+    "organic farmers partnership",
+    "Vietnamese heritage foods",
+    "authentic Vietnamese products",
+    "organic farming tradition",
+    "Vietnamese food culture",
+    "sustainable farming practices",
+    "local farmers support Vietnam"
+  ],
+  openGraph: {
+    title: "About VietRoot - Our Vietnamese Organic Farming Heritage",
+    description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships and cultural heritage.",
+    url: "https://vietroot.com/about",
+    type: "website",
+    images: [
+      {
+        url: "/og-about.jpg",
+        width: 1200,
+        height: 630,
+        alt: "VietRoot - Vietnamese Organic Farming Heritage",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About VietRoot - Our Vietnamese Organic Farming Heritage",
+    description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers.",
+    images: ["/og-about.jpg"],
+  },
+  alternates: {
+    canonical: "https://vietroot.com/about",
+  },
+};
 
 const milestones = [
   {
