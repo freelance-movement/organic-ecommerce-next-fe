@@ -131,7 +131,7 @@ export default function Home() {
 
       <script
         async
-        src="https://intern-chatbot-api.zodinet.tech/widget.js"
+        src="https://intern-chatbot-widget.zodinet.tech/widget.js"
         data-client-key="70f9239c-a6e9-43c3-b340-379779493591"
       ></script>
     </div>
