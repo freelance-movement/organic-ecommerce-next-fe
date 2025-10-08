@@ -59,27 +59,78 @@ export default function OurFarm() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  // Fetch dynamic farm videos (category=farm_file, type=video)
+  const backendOrigin = process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "";
+  type DynamicVideo = { id: string; title: string; url: string };
+  const [dynamicVideos, setDynamicVideos] = useState<DynamicVideo[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchVideoAssets = async () => {
+      if (!backendOrigin) return;
+      try {
+        const params = new URLSearchParams({
+          page: "1",
+          limit: "12",
+          category: "farm_file",
+          type: "video",
+          isActive: "true",
+        });
+        const url = `${backendOrigin}/api/v1/assets?${params.toString()}`;
+        const res = await fetch(url, { cache: "force-cache" });
+        if (!res.ok) return;
+        const json = await res.json();
+        const items: Array<{ id: string; title?: string; url?: string }> =
+          json?.data || [];
+        const mapped: DynamicVideo[] = items
+          .map((it) => {
+            const raw = it?.url || "";
+            if (!raw) return null;
+            const absolute = /^https?:\/\//i.test(raw)
+              ? raw
+              : `${backendOrigin}${raw.startsWith("/") ? "" : "/"}${raw}`;
+            return { id: it.id, title: it.title || "Our Farm", url: absolute };
+          })
+          .filter(Boolean) as DynamicVideo[];
+        if (isMounted && mapped.length) setDynamicVideos(mapped);
+      } catch {
+        // silent fallback to static videos
+      }
+    };
+    fetchVideoAssets();
+    return () => {
+      isMounted = false;
+    };
+  }, [backendOrigin]);
+
   // Auto-play functionality
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentVideo((prev) => (prev + 1) % farmVideos.length);
+      setCurrentVideo((prev) => {
+        const total = dynamicVideos.length || farmVideos.length;
+        return (prev + 1) % total;
+      });
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, dynamicVideos.length]);
 
   const nextVideo = () => {
-    setCurrentVideo((prev) => (prev + 1) % farmVideos.length);
+    setCurrentVideo((prev) => {
+      const total = dynamicVideos.length || farmVideos.length;
+      return (prev + 1) % total;
+    });
     setIsAutoPlaying(false);
     setIsPlaying(false);
   };
 
   const prevVideo = () => {
-    setCurrentVideo(
-      (prev) => (prev - 1 + farmVideos.length) % farmVideos.length
-    );
+    setCurrentVideo((prev) => {
+      const total = dynamicVideos.length || farmVideos.length;
+      return (prev - 1 + total) % total;
+    });
     setIsAutoPlaying(false);
     setIsPlaying(false);
   };
@@ -94,7 +145,25 @@ export default function OurFarm() {
     setIsPlaying(!isPlaying);
   };
 
-  const currentVideoData = farmVideos[currentVideo];
+  // Decide source
+  const usingDynamic = dynamicVideos.length > 0;
+  const currentVideoData = usingDynamic
+    ? {
+        id: dynamicVideos[currentVideo % dynamicVideos.length].id,
+        title: dynamicVideos[currentVideo % dynamicVideos.length].title,
+        description: farmVideos[0].description,
+        videoUrl: dynamicVideos[currentVideo % dynamicVideos.length].url,
+        thumbnail: farmVideos[currentVideo % farmVideos.length].thumbnail,
+        location: farmVideos[currentVideo % farmVideos.length].location,
+        duration: farmVideos[currentVideo % farmVideos.length].duration,
+      }
+    : farmVideos[currentVideo % farmVideos.length];
+
+  const isMp4 =
+    /\.mp4(\?|$)/i.test(currentVideoData.videoUrl) ||
+    /vietrootstorage/i.test(currentVideoData.videoUrl);
+
+  const displayedThumbnail = currentVideoData.thumbnail;
 
   return (
     <section className="pt-24 pb-16 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden">
@@ -132,18 +201,31 @@ export default function OurFarm() {
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-black">
                 {/* Video/Thumbnail Display */}
                 {isPlaying ? (
-                  <iframe
-                    src={`${currentVideoData.videoUrl}&autoplay=1`}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                    data-testid={`video-player-${currentVideoData.id}`}
-                  />
+                  isMp4 ? (
+                    <video
+                      src={currentVideoData.videoUrl}
+                      className="w-full h-full"
+                      autoPlay
+                      muted
+                      loop
+                      controls
+                      playsInline
+                      data-testid={`video-player-${currentVideoData.id}`}
+                    />
+                  ) : (
+                    <iframe
+                      src={`${currentVideoData.videoUrl}&autoplay=1`}
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="autoplay; fullscreen"
+                      allowFullScreen
+                      data-testid={`video-player-${currentVideoData.id}`}
+                    />
+                  )
                 ) : (
                   <div className="relative w-full h-full">
                     <img
-                      src={currentVideoData.thumbnail}
+                      src={displayedThumbnail}
                       alt={currentVideoData.title}
                       className="w-full h-full object-cover"
                       data-testid={`video-thumbnail-${currentVideoData.id}`}
@@ -197,7 +279,7 @@ export default function OurFarm() {
 
               {/* Video Dots Indicator */}
               <div className="flex justify-center space-x-3 mt-6">
-                {farmVideos.map((_, index) => (
+                {(usingDynamic ? dynamicVideos : farmVideos).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToVideo(index)}

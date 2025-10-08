@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Leaf, Menu, X, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -18,7 +18,7 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -50,6 +50,44 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
     { href: "/contact", label: "Contact", testId: "nav-contact" },
   ];
 
+  // Fetch logo asset by category 'logo_file'
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const backendOrigin = process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "";
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchLogo = async () => {
+      try {
+        const params = new URLSearchParams({
+          limit: "1",
+          category: "logo_file",
+          type: "image",
+          isActive: "true",
+        });
+        const url = `${backendOrigin}/api/v1/assets?${params.toString()}`;
+        const res = await fetch(url, {
+          signal: controller.signal,
+          cache: "force-cache",
+        });
+
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const first = data?.data?.[0];
+        const rawUrl: string | undefined = first?.url;
+        if (!rawUrl) return;
+        const absolute = /^https?:\/\//i.test(rawUrl)
+          ? rawUrl
+          : `${backendOrigin}${rawUrl.startsWith("/") ? "" : "/"}${rawUrl}`;
+        setLogoUrl(absolute);
+      } catch (_) {
+        // fail silently; fallback will render
+      }
+    };
+    if (backendOrigin) fetchLogo();
+    return () => controller.abort();
+  }, [backendOrigin]);
+
   return (
     <nav
       className={`w-full shadow-sm z-50 ${
@@ -72,16 +110,33 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
           {/* Logo */}
           <div className="flex items-center" data-testid="nav-logo">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <Leaf className="text-viet-green-medium h-6 w-6 mr-2" aria-hidden="true" />
-              <span className="font-bold text-xl text-viet-green-dark">
-                VietRoot
-              </span>
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt="VietRoot logo"
+                  className="h-8 w-auto mr-2"
+                  style={{ objectFit: "contain" }}
+                />
+              ) : (
+                <>
+                  <Leaf
+                    className="text-viet-green-medium h-6 w-6 mr-2"
+                    aria-hidden="true"
+                  />
+                  <span className="font-bold text-xl text-viet-green-dark">
+                    VietRoot
+                  </span>
+                </>
+              )}
             </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden lg:block">
-            <div className="ml-10 flex items-baseline space-x-2" role="navigation">
+            <div
+              className="ml-10 flex items-baseline space-x-2"
+              role="navigation"
+            >
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -91,9 +146,11 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
                   aria-current={pathname === item.href ? "page" : undefined}
                 >
                   <span className="relative z-10">{item.label}</span>
-                  <div 
+                  <div
                     className={`absolute bottom-0 left-1/2 h-0.5 bg-gradient-to-r from-viet-green-medium to-viet-earth-gold transform -translate-x-1/2 transition-all duration-300 ease-out ${
-                      pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
+                      pathname === item.href
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
                     }`}
                     aria-hidden="true"
                   ></div>
@@ -114,7 +171,7 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
               <span className="hidden sm:inline">Join Us</span>
               <span className="sm:hidden">Join</span>
             </Button>
-            
+
             {/* Mobile menu button */}
             <Button
               variant="ghost"

@@ -3,7 +3,7 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Leaf, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import ImageCarousel from "./ImageCarousel";
@@ -14,44 +14,91 @@ import ImageCarousel from "./ImageCarousel";
 export default function QuickIntro() {
   // Image carousel state and data
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = [
+  const backendOrigin = process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "";
+  const defaultImages = [
     {
       url: "/image_1755871684707.png",
       alt: "Organic farmer in Vietnam harvesting fresh produce",
-      caption: "Mr. Tran in the Red River Delta, nurturing organic greens"
+      caption: "Mr. Tran in the Red River Delta, nurturing organic greens",
     },
     {
       url: "/image_1755871696467.png",
       alt: "Traditional Vietnamese farming methods",
-      caption: "Preserving traditional farming wisdom in Dalat highlands"
+      caption: "Preserving traditional farming wisdom in Dalat highlands",
     },
     {
       url: "/image_1755874088476.png",
       alt: "Sustainable agriculture practices",
-      caption: "Sustainable water management in Mekong Delta rice fields"
+      caption: "Sustainable water management in Mekong Delta rice fields",
     },
     {
       url: "/image_1755874292354.png",
       alt: "Organic produce direct from Vietnam",
-      caption: "Hand-selected harvest ready for VietRoot customers"
-    }
+      caption: "Hand-selected harvest ready for VietRoot customers",
+    },
   ];
+  const [images, setImages] = useState<typeof defaultImages>(defaultImages);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchAssets = async () => {
+      if (!backendOrigin) return; // stay with defaults
+      try {
+        const params = new URLSearchParams({
+          page: "1",
+          limit: "10",
+          category: "letter_file",
+          type: "image",
+          isActive: "true",
+        });
+        const url = `${backendOrigin}/api/v1/assets?${params.toString()}`;
+        const res = await fetch(url, { cache: "force-cache" });
+        if (!res.ok) return;
+        const json = await res.json();
+        const items: Array<{ url?: string; title?: string }> = json?.data || [];
+        const mapped = items
+          .map((it, idx) => {
+            const raw = it?.url || "";
+            if (!raw) return null;
+            const absolute = /^https?:\/\//i.test(raw)
+              ? raw
+              : `${backendOrigin}${raw.startsWith("/") ? "" : "/"}${raw}`;
+            return {
+              url: absolute,
+              alt: it?.title || `VietRoot letter image ${idx + 1}`,
+              caption: it?.title || "",
+            };
+          })
+          .filter(Boolean) as typeof defaultImages;
+        if (isMounted && mapped.length > 0) {
+          setImages(mapped);
+          setCurrentImageIndex(0);
+        }
+      } catch {
+        // silent fallback to defaults
+      }
+    };
+    fetchAssets();
+    return () => {
+      isMounted = false;
+    };
+  }, [backendOrigin]);
 
   // Image navigation functions
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => 
+    setCurrentImageIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => 
+    setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
   return (
-    <section 
+    <section
       className="pt-24 pb-20 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden"
       aria-labelledby="intro-heading"
     >
@@ -74,7 +121,7 @@ export default function QuickIntro() {
           >
             VietRoot: Where the Essence of Vietnam Converges
           </h2>
-          <div 
+          <div
             className="w-32 h-2 bg-gradient-to-r from-viet-green-medium via-viet-earth-gold to-viet-green-medium mx-auto rounded-full animate-fade-in-up animation-delay-200 shadow-lg"
             aria-hidden="true"
           ></div>
@@ -84,7 +131,7 @@ export default function QuickIntro() {
           {/* Left - Story Section */}
           <div className="animate-fade-in-up animation-delay-400">
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-viet-green-light/30 relative overflow-hidden">
-              <div 
+              <div
                 className="absolute top-0 right-0 w-32 h-32 bg-viet-green-medium/5 rounded-full -translate-y-16 translate-x-16"
                 aria-hidden="true"
               ></div>

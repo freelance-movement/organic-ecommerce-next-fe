@@ -25,9 +25,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" as="image" href="/bg-fruit4.jpg" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
         <Toaster />
+        <script
+          async
+          src="https://intern-chatbot-api.zodinet.tech/widget.js"
+          data-client-key="70f9239c-a6e9-43c3-b340-379779493591"
+        ></script>
       </body>
     </html>
   );

@@ -521,7 +521,7 @@ const renderNodeImpl = (node: any, key?: number): React.ReactNode => {
     case "listItem": {
       return (
         <li key={key} className="relative leading-relaxed text-gray-700 pl-6">
-          <span className="absolute left-0 top-2 w-2 h-2 bg-green-500 rounded-full"></span>
+          <span className="absolute left-0 top-2 w-2 h-2  rounded-full"></span>
           {(node.content || []).map((child: any, i: number) => {
             // For list items, render paragraphs without margin
             if (child.type === "paragraph") {
@@ -697,7 +697,8 @@ export const BlogContent = memo<BlogContentProps>(
     );
 
     // For long content or when explicitly enabled, use scrollable container
-    if (enableScrolling || isLongContent) {
+    // if (enableScrolling || isLongContent) {
+    if (enableScrolling) {
       return (
         <div className="py-8">
           {/* Scrollable content container */}
@@ -719,9 +720,9 @@ export const BlogContent = memo<BlogContentProps>(
         </div>
       );
     }
+    return <div className="py-8">{renderedContent}</div>;
 
     // For normal content, use regular rendering
-    return <div className="py-8">{renderedContent}</div>;
   }
 );
 
