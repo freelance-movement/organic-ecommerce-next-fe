@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Footer from "@/components/Footer";
 import { Users, Target, Clock, Heart } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import MissionVision from "@/components/MissionVision";
 
 export const metadata: Metadata = {
   title: "About VietRoot - Our Story & Vietnamese Organic Farming Heritage",
@@ -177,6 +178,9 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      {/* Mission & Vision Section */}
+      <MissionVision />
 
       {/* Our Vision Timeline */}
       <section className="py-16 md:py-24 bg-white">
