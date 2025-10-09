@@ -71,6 +71,14 @@ export default function FeaturedProducts() {
   const [products, setProducts] = useState<BackendProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,17 +86,29 @@ export default function FeaturedProducts() {
       try {
         setLoading(true);
         setError(null);
-        const url = `/api/v1/products?limit=10&sortBy=createdAt&sortOrder=DESC&page=1&isActive=true`;
-        const res = await fetch(url, { credentials: "include" });
-        if (!res.ok) {
-          const text = (await res.text()) || res.statusText;
-          throw new Error(`${res.status}: ${text}`);
+        const backendOrigin = process.env.NEXT_PUBLIC_BACKEND_ORIGIN;
+        if (!backendOrigin) {
+          if (isMounted) setError("Backend origin not configured");
+          return;
         }
-        const data = await res.json();
-        const items: BackendProduct[] = data?.data || data?.items || [];
+        const params = new URLSearchParams({
+          page: "1",
+          limit: "20", // Fetch more products for slider
+          isActive: "true",
+        });
+        const url = `${backendOrigin}/api/v1/products?${params.toString()}`;
+        const res = await fetch(url, { cache: "force-cache" });
+        if (!res.ok) {
+          if (isMounted) setError(`HTTP ${res.status}: ${res.statusText}`);
+          return;
+        }
+        const json = await res.json();
+        const items: BackendProduct[] = json?.data || [];
         if (isMounted) setProducts(items);
-      } catch (e: any) {
-        if (isMounted) setError(e?.message || "Failed to load products");
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Unknown error");
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -99,10 +119,17 @@ export default function FeaturedProducts() {
     };
   }, []);
 
-  const productsPerSlide = 3; // Show 3 products per slide for desktop, 2 for mobile
+  // Dynamic products per slide based on screen size - max 4 products
+  const productsPerSlide = useMemo(() => {
+    if (windowWidth >= 1280) return 4; // xl: 4 products (reduced from 5)
+    if (windowWidth >= 1024) return 3; // lg: 3 products
+    if (windowWidth >= 640) return 2;  // sm: 2 products
+    return 1; // mobile: 1 product
+  }, [windowWidth]);
+
   const totalSlides = useMemo(
     () => Math.max(1, Math.ceil(products.length / productsPerSlide)),
-    [products.length]
+    [products.length, productsPerSlide]
   );
 
   // Auto-play functionality
@@ -167,14 +194,14 @@ export default function FeaturedProducts() {
   };
 
   return (
-    <section className="pt-24 pb-16 md:pt-24 md:pb-16 bg-[#e6f5dc] relative overflow-hidden">
+    <section className="pt-16 pb-12 md:pt-18 md:pb-14 bg-[#e6f5dc] relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-viet-green-light/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-600"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
             <ShoppingCart className="h-6 w-6 text-white" />
@@ -186,7 +213,7 @@ export default function FeaturedProducts() {
             Our Most Loved Products
           </h2>
           <p
-            className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto animate-fade-in-up animation-delay-200"
+            className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto animate-fade-in-up animation-delay-200"
             data-testid="text-products-subtitle"
           >
             Handpicked organic treasures from across Vietnam, bringing you the
@@ -195,13 +222,13 @@ export default function FeaturedProducts() {
           <div className="w-32 h-2 bg-gradient-to-r from-viet-green-medium to-viet-earth-gold mx-auto rounded-full mt-6 animate-fade-in-up animation-delay-400 shadow-lg"></div>
         </div>
 
-        {/* Universal Product Slider - All Devices */}
+        {/* Product Slider - One Row Only */}
         <div className="relative">
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-viet-green-light/30">
             <div className="relative overflow-hidden rounded-2xl">
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-                  {Array.from({ length: 3 }).map((_, idx) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {Array.from({ length: productsPerSlide }).map((_, idx) => (
                     <div
                       key={idx}
                       className="bg-white rounded-2xl shadow-lg h-80 animate-pulse"
@@ -221,7 +248,7 @@ export default function FeaturedProducts() {
                 >
                   {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                     <div key={slideIndex} className="w-full flex-shrink-0">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
                         {products
                           .slice(
                             slideIndex * productsPerSlide,
@@ -262,7 +289,7 @@ export default function FeaturedProducts() {
                               </div>
 
                               <div className="p-6 space-y-4">
-                                {/* Price Section - Moved to Top */}
+                                {/* Price Section */}
                                 <div className="flex items-center justify-between">
                                   <div className="flex flex-col">
                                     <span
@@ -285,7 +312,6 @@ export default function FeaturedProducts() {
                                     data-testid={`button-add-to-cart-${product.id}`}
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      // Add to cart functionality can be added here
                                       console.log("Add to cart", {
                                         productId: product.id,
                                         variantId: product.variants?.[0]?.id,
@@ -354,41 +380,45 @@ export default function FeaturedProducts() {
           </div>
 
           {/* Navigation Buttons */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={prevSlide}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-12 h-12 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
-            data-testid="button-prev-slide"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
+          {totalSlides > 1 && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={prevSlide}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-12 h-12 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                data-testid="button-prev-slide"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={nextSlide}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-12 h-12 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
-            data-testid="button-next-slide"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={nextSlide}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-viet-green-dark rounded-full w-12 h-12 p-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                data-testid="button-next-slide"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
 
-          {/* Dot Indicators */}
-          <div className="flex justify-center space-x-3 mt-6">
-            {Array.from({ length: totalSlides }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide
-                    ? "bg-viet-green-medium scale-125 shadow-lg"
-                    : "bg-gray-300 hover:bg-gray-400"
-                }`}
-                data-testid={`dot-indicator-${index}`}
-              />
-            ))}
-          </div>
+              {/* Dot Indicators */}
+              <div className="flex justify-center space-x-3 mt-6">
+                {Array.from({ length: totalSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentSlide
+                        ? "bg-viet-green-medium scale-125 shadow-lg"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    }`}
+                    data-testid={`dot-indicator-${index}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* View All Products Button */}

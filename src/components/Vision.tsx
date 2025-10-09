@@ -26,7 +26,7 @@ export default function Vision() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-viet-green-light/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-viet-earth-gold/10 rounded-full blur-3xl"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-xl">
             <Eye className="h-10 w-10 text-white" />

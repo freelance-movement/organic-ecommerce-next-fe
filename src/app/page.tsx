@@ -142,7 +142,7 @@ export default function Home() {
 function FeaturedProductsSkeleton() {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-white via-viet-earth-cream to-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-12 animate-pulse">
           <div className="w-12 h-12 rounded-full bg-gray-200 mx-auto mb-6"></div>
           <div className="h-8 w-64 bg-gray-200 mx-auto mb-4 rounded"></div>

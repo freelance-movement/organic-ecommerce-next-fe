@@ -92,19 +92,19 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
     <nav
       className={`w-full shadow-sm z-50 ${
         variant === "absolute"
-          ? "absolute top-10 left-1/2 transform -translate-x-1/2"
+          ? "absolute top-6 left-1/2 transform -translate-x-1/2 mt-4"
           : "fixed top-0 left-0 "
       }`}
       aria-label="Main navigation"
     >
       <div
-        className={`bg-white px-4 sm:px-6 lg:px-8 mx-auto ${
-          variant === "absolute" ? "max-w-screen-lg rounded-md" : "w-full"
+        className={`bg-white px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mx-2 sm:mx-4 lg:mx-6 ${
+          variant === "absolute" ? "max-w-8xl rounded-xl shadow-xl" : "w-full"
         }`}
       >
         <div
           className={`flex justify-between items-center ${
-            variant === "absolute" ? "h-16" : "h-20"
+            variant === "absolute" ? "h-16" : "h-16"
           }`}
         >
           {/* Logo */}

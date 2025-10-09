@@ -60,7 +60,7 @@ export default function HeroSection() {
         style={{ display: "none" }}
       />
       <section
-        className="relative min-h-[600px] md:min-h-[700px] flex items-start bg-viet-earth-cream bg-cover bg-no-repeat pt-16"
+        className="relative min-h-[600px] md:min-h-[700px] flex items-start bg-viet-earth-cream bg-cover bg-no-repeat pt-24 md:pt-32"
         style={{
           backgroundImage: `url("${backgroundUrl}")`,
           backgroundPosition: "center center",
@@ -95,7 +95,7 @@ export default function HeroSection() {
           aria-hidden="true"
         ></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left column - space for future content */}
             <div className="hidden lg:block" aria-hidden="true"></div>

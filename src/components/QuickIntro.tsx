@@ -99,7 +99,7 @@ export default function QuickIntro() {
 
   return (
     <section
-      className="pt-24 pb-20 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden"
+      className="pt-16 pb-14 md:pt-18 md:pb-12 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden"
       aria-labelledby="intro-heading"
     >
       {/* Background Decorations */}
@@ -109,7 +109,7 @@ export default function QuickIntro() {
         <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-viet-green-light/20 rounded-full blur-2xl"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
             <Leaf className="h-6 w-6 text-white" aria-hidden="true" />

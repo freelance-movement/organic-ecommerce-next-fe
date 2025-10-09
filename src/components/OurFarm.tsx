@@ -166,14 +166,14 @@ export default function OurFarm() {
   const displayedThumbnail = currentVideoData.thumbnail;
 
   return (
-    <section className="pt-24 pb-16 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden">
+    <section className="pt-16 pb-12 md:pt-18 md:pb-14 bg-gradient-to-br from-viet-earth-cream via-white to-viet-green-light/20 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-viet-green-light/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-600"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
             <Sprout className="h-6 w-6 text-white" />
@@ -185,7 +185,7 @@ export default function OurFarm() {
             Our Farm
           </h2>
           <p
-            className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto animate-fade-in-up animation-delay-200"
+            className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto animate-fade-in-up animation-delay-200"
             data-testid="text-farm-subtitle"
           >
             Discover the authentic farming practices that make our products

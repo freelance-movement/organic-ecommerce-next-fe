@@ -40,7 +40,7 @@ export default function Footer() {
   return (
     <footer className="bg-viet-green-dark text-white pt-24 pb-12" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Footer</h2>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="md:col-span-1">

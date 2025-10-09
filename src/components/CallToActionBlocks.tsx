@@ -36,8 +36,8 @@ const ctaBlocks = [
 
 export default function CallToActionBlocks() {
   return (
-    <section className="pt-24 pb-16 md:pt-24 md:pb-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="pt-16 pb-12 md:pt-18 md:pb-18 bg-white">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {ctaBlocks.map((block) => {
             const IconComponent = block.icon;

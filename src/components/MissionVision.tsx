@@ -34,8 +34,8 @@ export default function MissionVision() {
   return (
     <div>
       {/* Mission Section */}
-      <section className="pt-24 pb-16 md:pt-24 md:pb-16 bg-gradient-to-br from-viet-green-dark to-viet-green-medium text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-16 pb-12 md:pt-18 md:pb-14 bg-gradient-to-br from-viet-green-dark to-viet-green-medium text-white overflow-hidden">
+        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-6 animate-float">
               <Target className="h-6 w-6 text-white" />
@@ -122,13 +122,13 @@ export default function MissionVision() {
       </section>
 
       {/* Vision Section */}
-      <section className="pt-24 pb-16 md:pt-24 md:pb-16 bg-white relative overflow-hidden">
+      <section className="pt-16 pb-12 md:pt-18 md:pb-14 bg-white relative overflow-hidden">
         {/* Decorative Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-viet-earth-cream to-white opacity-50"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-viet-green-light/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-viet-earth-gold/10 rounded-full blur-3xl"></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-xl">
               <Eye className="h-6 w-6 text-white" />

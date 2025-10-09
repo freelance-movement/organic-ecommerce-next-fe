@@ -126,7 +126,7 @@ export default function NewsletterSignup() {
   return (
     <section
       id="newsletter-section"
-      className="py-16 md:py-16 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden"
+      className="py-12 md:py-14 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden"
       aria-labelledby="newsletter-heading"
     >
       {/* Decorative Background Elements */}
@@ -136,7 +136,7 @@ export default function NewsletterSignup() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-float">
             <Mail className="h-6 w-6 text-white" aria-hidden="true" />
@@ -149,7 +149,7 @@ export default function NewsletterSignup() {
             Join Our Newsletter
           </h2>
           <p
-            className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200"
+            className="text-xl text-white/90 mb-8 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200"
             data-testid="text-newsletter-description"
           >
             Be the first to discover new products, get exclusive offers, and
@@ -157,7 +157,7 @@ export default function NewsletterSignup() {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl animate-fade-in-up animation-delay-400">
             <form action={clientAction} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
