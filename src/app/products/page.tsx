@@ -1,7 +1,9 @@
 "use client";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
 import {
   ShoppingCart,
   Filter,
@@ -91,7 +93,25 @@ type ProductItem = {
   categories?: ProductCategory[];
 };
 
-export default function Products() {
+// Component to handle search params
+function SearchParamsHandler({
+  onSearchQueryChange,
+}: {
+  onSearchQueryChange: (query: string) => void;
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+    if (searchFromUrl) {
+      onSearchQueryChange(searchFromUrl);
+    }
+  }, [searchParams, onSearchQueryChange]);
+
+  return null;
+}
+
+function ProductsContent() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -99,6 +119,9 @@ export default function Products() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const productsPerPage = 9;
   const categoriesPerPage = 8; // 2 rows of 4 categories each
+
+  // Debounce search query with 500ms delay
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
 
   const [categories, setCategories] = useState<CategoryGroup[]>([
     { id: "all", name: "All Products", parent: null, children: [] },
@@ -225,8 +248,8 @@ export default function Products() {
         };
 
         // Add search query if provided
-        if (searchQuery.trim()) {
-          queryParams.search = searchQuery.trim();
+        if (debouncedSearchQuery.trim()) {
+          queryParams.search = debouncedSearchQuery.trim();
         }
 
         // Add category ID as an array parameter if selected
@@ -280,7 +303,7 @@ export default function Products() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, searchQuery, selectedCategory]);
+  }, [currentPage, debouncedSearchQuery, selectedCategory]);
 
   // Get visible categories (with pagination)
   const visibleCategories = useMemo(() => {
@@ -351,8 +374,11 @@ export default function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e6f5dc]">
+    <div className="min-h-screen bg-gray-50">
       <Navigation variant="fixed" />
+      <Suspense fallback={null}>
+        <SearchParamsHandler onSearchQueryChange={setSearchQuery} />
+      </Suspense>
 
       {/* Hero Section */}
       <ProductsHero
@@ -377,7 +403,7 @@ export default function Products() {
                   </div>
                   <Input
                     type="text"
-                    placeholder="🔍 Search products by name or description..."
+                    placeholder="Search products by name or description..."
                     value={searchQuery}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -1102,5 +1128,23 @@ export default function Products() {
 
       <Footer />
     </div>
+  );
+}
+
+// Main export with Suspense boundary
+export default function Products() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-viet-green-medium mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading products...</p>
+          </div>
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }
