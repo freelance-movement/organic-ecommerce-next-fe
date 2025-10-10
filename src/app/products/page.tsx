@@ -150,60 +150,21 @@ function ProductsContent() {
         const data = await res.json();
         const items: CategoryItem[] = data?.data || [];
 
-        // Check for special category that might be a parent (like "By Fruit Type")
-        const specialParent = items.find(
-          (item) =>
-            item.name === "By Fruit Type" || item.slug === "by-fruit-type"
-        );
-
-        // Create groups with all items as top level if no parentId present in data
-        let groups: CategoryGroup[] = [
+        // Build simple flat category list (no special parent grouping)
+        const groups: CategoryGroup[] = [
           {
             id: "all",
             name: "All Products",
             parent: null,
             children: [],
           },
-        ];
-
-        if (specialParent) {
-          // If we found a special parent category, use it as a parent for others
-          const childCategories = items.filter(
-            (item) => item.id !== specialParent.id
-          );
-
-          groups.push({
-            id: specialParent.id,
-            name: specialParent.name,
+          ...items.map((item) => ({
+            id: item.id,
+            name: item.name,
             parent: null,
-            children: childCategories.map((item) => ({
-              id: item.id,
-              name: item.name,
-            })),
-          });
-
-          // Also add all categories as top-level items
-          items
-            .filter((item) => item.id !== specialParent.id)
-            .forEach((item) => {
-              groups.push({
-                id: item.id,
-                name: item.name,
-                parent: null,
-                children: [],
-              });
-            });
-        } else {
-          // No special parent found, just add all items as top level
-          items.forEach((item) => {
-            groups.push({
-              id: item.id,
-              name: item.name,
-              parent: null,
-              children: [],
-            });
-          });
-        }
+            children: [],
+          })),
+        ];
 
         if (isMounted) setCategories(groups);
       } catch (e: any) {
@@ -578,7 +539,7 @@ function ProductsContent() {
 
             {/* Category Filter */}
             <div className="category-filter-container animate-fade-in-up">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div className="flex items-center gap-3">
                   <Filter className="h-5 w-5 text-viet-green-medium transition-all duration-300 hover:scale-110 hover:rotate-12" />
                   <h3 className="text-lg font-semibold text-viet-green-dark">
@@ -606,8 +567,10 @@ function ProductsContent() {
               </div>
               <div
                 className={`category-grid ${
-                  showAllCategories ? "max-h-96" : "max-h-40"
-                }`}
+                  showAllCategories
+                    ? "max-h-72 sm:max-h-96"
+                    : "max-h-none sm:max-h-40"
+                } overflow-x-auto sm:overflow-visible scrollbar-thin scrollbar-thumb-viet-green-light scrollbar-track-gray-100 -mx-2 px-2`}
                 style={{
                   overflow: "visible",
                   position: "relative",
@@ -636,7 +599,7 @@ function ProductsContent() {
                             handleCategoryChange(category.id);
                             toggleCategory(category.id);
                           }}
-                          className={`category-button ${
+                          className={`category-button px-3 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm ${
                             selectedCategory === category.id ? "selected" : ""
                           }`}
                           data-testid={`filter-${category.id}`}
@@ -745,7 +708,7 @@ function ProductsContent() {
                             : "outline"
                         }
                         onClick={() => handleCategoryChange(category.id)}
-                        className={`category-button ${
+                        className={`category-button px-3 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm ${
                           selectedCategory === category.id ? "selected" : ""
                         }`}
                         data-testid={`filter-${category.id}`}

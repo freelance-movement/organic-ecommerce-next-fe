@@ -36,26 +36,37 @@ const socialIcons = [
  */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-viet-green-dark text-white pt-24 pb-12" aria-labelledby="footer-heading">
-      <h2 id="footer-heading" className="sr-only">Footer</h2>
+    <footer
+      className="bg-viet-green-dark text-white pt-16 md:pt-24 pb-8 md:pb-12"
+      aria-labelledby="footer-heading"
+    >
+      <h2 id="footer-heading" className="sr-only">
+        Footer
+      </h2>
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="md:col-span-1">
-            <div className="flex items-center mb-4" data-testid="footer-logo">
-              <Leaf className="text-viet-green-light h-6 w-6 mr-2" aria-hidden="true" />
+            <div
+              className="flex items-center justify-center md:justify-start mb-4"
+              data-testid="footer-logo"
+            >
+              <Leaf
+                className="text-viet-green-light h-6 w-6 mr-2"
+                aria-hidden="true"
+              />
               <span className="font-bold text-xl">VietRoot</span>
             </div>
             <p
-              className="text-gray-300 mb-4 leading-relaxed"
+              className="text-gray-300 mb-4 leading-relaxed text-center md:text-left"
               data-testid="text-footer-description"
             >
               The Root of Goodness, The Taste of Vietnam. Bringing you the
               finest organic products from Vietnamese farmers.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex justify-center md:justify-start space-x-4">
               {socialIcons.map((social) => {
                 const IconComponent = social.icon;
                 return (
@@ -76,7 +87,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3
               className="font-semibold text-lg mb-4"
               data-testid="text-footer-quicklinks-title"
@@ -84,8 +95,8 @@ export default function Footer() {
             >
               Quick Links
             </h3>
-            <ul 
-              className="space-y-2"
+            <ul
+              className="space-y-2 flex flex-col items-center md:items-start"
               aria-labelledby="footer-quicklinks-heading"
             >
               {quickLinks.map((link) => (
@@ -105,7 +116,7 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          <div>
+          <div className="text-center md:text-left">
             <h3
               className="font-semibold text-lg mb-4"
               data-testid="text-footer-categories-title"
@@ -113,8 +124,8 @@ export default function Footer() {
             >
               Categories
             </h3>
-            <ul 
-              className="space-y-2"
+            <ul
+              className="space-y-2 flex flex-col items-center md:items-start"
               aria-labelledby="footer-categories-heading"
             >
               {categories.map((category) => (
@@ -134,7 +145,7 @@ export default function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="text-center md:text-left">
             <h3
               className="font-semibold text-lg mb-4"
               data-testid="text-footer-contact-title"
@@ -144,28 +155,51 @@ export default function Footer() {
             </h3>
             <address className="space-y-2 text-gray-300 not-italic">
               <p
-                className="flex items-center"
+                className="flex items-center justify-center md:justify-start"
                 data-testid="text-contact-address"
               >
-                <MapPin className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
+                <MapPin
+                  className="h-4 w-4 mr-2 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <span>Ho Chi Minh City, Vietnam</span>
               </p>
-              <p className="flex items-center" data-testid="text-contact-phone">
-                <Phone className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
-                <a href="tel:+84123456789" className="hover:text-white">+84 123 456 789</a>
+              <p
+                className="flex items-center justify-center md:justify-start"
+                data-testid="text-contact-phone"
+              >
+                <Phone
+                  className="h-4 w-4 mr-2 flex-shrink-0"
+                  aria-hidden="true"
+                />
+                <a href="tel:+84123456789" className="hover:text-white">
+                  +84 123 456 789
+                </a>
               </p>
-              <p className="flex items-center" data-testid="text-contact-email">
-                <Mail className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
-                <a href="mailto:hello@vietroot.com" className="hover:text-white">hello@vietroot.com</a>
+              <p
+                className="flex items-center justify-center md:justify-start"
+                data-testid="text-contact-email"
+              >
+                <Mail
+                  className="h-4 w-4 mr-2 flex-shrink-0"
+                  aria-hidden="true"
+                />
+                <a
+                  href="mailto:hello@vietroot.com"
+                  className="hover:text-white"
+                >
+                  hello@vietroot.com
+                </a>
               </p>
             </address>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-viet-green-medium mt-8 pt-8 text-center text-gray-300">
+        <div className="border-t border-viet-green-medium mt-8 pt-8 text-center text-gray-300 px-4">
           <p data-testid="text-copyright">
-            &copy; {currentYear} VietRoot. All rights reserved. Made with ❤️ in Vietnam.
+            &copy; {currentYear} VietRoot. All rights reserved. Made with ❤️ in
+            Vietnam.
           </p>
         </div>
       </div>
