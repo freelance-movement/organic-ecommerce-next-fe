@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import ProductsHero from "@/components/ProductsHero";
 
 const benefits = [
   {
@@ -135,7 +136,7 @@ export default function Partnerships() {
 
     setFormErrors(errors);
 
-    const hasErrors = Object.values(errors).some(error => error !== "");
+    const hasErrors = Object.values(errors).some((error) => error !== "");
     if (hasErrors) {
       toast({
         title: "Validation Error",
@@ -208,53 +209,38 @@ export default function Partnerships() {
     >
   ) => {
     const { name, value } = e.target;
-    
+
     // Apply character limits
     let limitedValue = value;
-    if (name === "company" && value.length > 150) limitedValue = value.slice(0, 150);
-    if (name === "name" && value.length > 100) limitedValue = value.slice(0, 100);
-    if (name === "email" && value.length > 254) limitedValue = value.slice(0, 254);
-    if (name === "phone" && value.length > 20) limitedValue = value.slice(0, 20);
-    if (name === "message" && value.length > 1000) limitedValue = value.slice(0, 1000);
-    
+    if (name === "company" && value.length > 150)
+      limitedValue = value.slice(0, 150);
+    if (name === "name" && value.length > 100)
+      limitedValue = value.slice(0, 100);
+    if (name === "email" && value.length > 254)
+      limitedValue = value.slice(0, 254);
+    if (name === "phone" && value.length > 20)
+      limitedValue = value.slice(0, 20);
+    if (name === "message" && value.length > 1000)
+      limitedValue = value.slice(0, 1000);
+
     setFormData((prev) => ({
       ...prev,
       [name]: limitedValue,
     }));
-    
+
     // Clear validation errors when user starts typing
-    setFormErrors(prev => ({ ...prev, [name]: "" }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   return (
     <div className="min-h-screen bg-[#e6f5dc]">
       <Navigation variant="fixed" />
 
-      {/* Hero Section */}
-      <section className="pt-24 pb-3 mt-0 md:mt-8 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-400"></div>
-          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-4 animate-float shadow-2xl">
-              <Handshake className="h-6 w-6 text-white" />
-            </div>
-            <h1
-              className="text-2xl md:text-4xl font-bold mb-8 animate-fade-in-up"
-              data-testid="text-partnerships-hero-title"
-            >
-              <span className="block bg-gradient-to-r from-white to-viet-earth-gold bg-clip-text text-transparent animate-gradient">
-                Partner With VietRoot
-              </span>
-            </h1>
-          </div>
-        </div>
-      </section>
+      <ProductsHero
+        title="Partner With VietRoot"
+        icon={<Handshake className="h-6 w-6 text-white" />}
+        className="bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark"
+      />
 
       {/* Value Proposition */}
       <section className="py-16 md:py-24 bg-white">
@@ -453,11 +439,18 @@ export default function Partnerships() {
                     onChange={handleChange}
                     required
                     maxLength={150}
-                    className={`w-full border-2 ${formErrors.company ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
+                    className={`w-full border-2 ${
+                      formErrors.company
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20"
+                    } rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-company"
                   />
                   {formErrors.company && (
-                    <p className="text-red-500 text-sm mt-1" data-testid="error-company-validation">
+                    <p
+                      className="text-red-500 text-sm mt-1"
+                      data-testid="error-company-validation"
+                    >
                       {formErrors.company}
                     </p>
                   )}
@@ -474,11 +467,18 @@ export default function Partnerships() {
                     onChange={handleChange}
                     required
                     maxLength={100}
-                    className={`w-full border-2 ${formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
+                    className={`w-full border-2 ${
+                      formErrors.name
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20"
+                    } rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-name"
                   />
                   {formErrors.name && (
-                    <p className="text-red-500 text-sm mt-1" data-testid="error-name-validation">
+                    <p
+                      className="text-red-500 text-sm mt-1"
+                      data-testid="error-name-validation"
+                    >
                       {formErrors.name}
                     </p>
                   )}
@@ -488,7 +488,7 @@ export default function Partnerships() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email * 
+                    Email *
                   </label>
                   <Input
                     type="email"
@@ -497,11 +497,18 @@ export default function Partnerships() {
                     onChange={handleChange}
                     required
                     maxLength={254}
-                    className={`w-full border-2 ${formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
+                    className={`w-full border-2 ${
+                      formErrors.email
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20"
+                    } rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-email"
                   />
                   {formErrors.email && (
-                    <p className="text-red-500 text-sm mt-1" data-testid="error-email-validation">
+                    <p
+                      className="text-red-500 text-sm mt-1"
+                      data-testid="error-email-validation"
+                    >
                       {formErrors.email}
                     </p>
                   )}
@@ -517,11 +524,18 @@ export default function Partnerships() {
                     value={formData.phone}
                     onChange={handleChange}
                     maxLength={20}
-                    className={`w-full border-2 ${formErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
+                    className={`w-full border-2 ${
+                      formErrors.phone
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20"
+                    } rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                     data-testid="input-phone"
                   />
                   {formErrors.phone && (
-                    <p className="text-red-500 text-sm mt-1" data-testid="error-phone-validation">
+                    <p
+                      className="text-red-500 text-sm mt-1"
+                      data-testid="error-phone-validation"
+                    >
                       {formErrors.phone}
                     </p>
                   )}
@@ -553,7 +567,7 @@ export default function Partnerships() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message 
+                  Message
                 </label>
                 <Textarea
                   name="message"
@@ -561,12 +575,19 @@ export default function Partnerships() {
                   onChange={handleChange}
                   rows={4}
                   maxLength={1000}
-                  className={`w-full border-2 ${formErrors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20'} rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
+                  className={`w-full border-2 ${
+                    formErrors.message
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                      : "border-gray-200 focus:border-viet-green-medium focus:ring-viet-green-medium/20"
+                  } rounded-xl px-4 py-3 text-lg transition-all duration-300 hover:border-gray-300`}
                   placeholder="Tell us about your business and partnership goals..."
                   data-testid="textarea-message"
                 />
                 {formErrors.message && (
-                  <p className="text-red-500 text-sm mt-1" data-testid="error-message-validation">
+                  <p
+                    className="text-red-500 text-sm mt-1"
+                    data-testid="error-message-validation"
+                  >
                     {formErrors.message}
                   </p>
                 )}

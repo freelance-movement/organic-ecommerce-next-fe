@@ -1,12 +1,14 @@
 import { Metadata } from "next";
 import Footer from "@/components/Footer";
 import { Users, Target, Clock, Heart } from "lucide-react";
+import ProductsHero from "@/components/ProductsHero";
 import Navigation from "@/components/Navigation";
 import MissionVision from "@/components/MissionVision";
 
 export const metadata: Metadata = {
   title: "About VietRoot - Our Story & Vietnamese Organic Farming Heritage",
-  description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships, cultural heritage, and mission to share Vietnam's finest organic products worldwide.",
+  description:
+    "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships, cultural heritage, and mission to share Vietnam's finest organic products worldwide.",
   keywords: [
     "VietRoot story",
     "Vietnamese organic farming",
@@ -17,11 +19,12 @@ export const metadata: Metadata = {
     "organic farming tradition",
     "Vietnamese food culture",
     "sustainable farming practices",
-    "local farmers support Vietnam"
+    "local farmers support Vietnam",
   ],
   openGraph: {
     title: "About VietRoot - Our Vietnamese Organic Farming Heritage",
-    description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships and cultural heritage.",
+    description:
+      "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers. Learn about our sustainable farming partnerships and cultural heritage.",
     url: "https://vietroot.com/about",
     type: "website",
     images: [
@@ -36,7 +39,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "About VietRoot - Our Vietnamese Organic Farming Heritage",
-    description: "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers.",
+    description:
+      "Discover VietRoot's journey: connecting authentic Vietnamese organic farmers with global consumers.",
     images: ["/og-about.jpg"],
   },
   alternates: {
@@ -76,31 +80,11 @@ export default function About() {
     <div className="min-h-screen bg-[#e6f5dc]">
       <Navigation variant="fixed" />
 
-      {/* Hero Section */}
-      <section className="pt-24 pb-3 mt-0 md:mt-8 md:pt-20 md:pb-8 bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark text-white relative overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-400"></div>
-          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-4 animate-float shadow-2xl">
-              <Heart className="h-6 w-6 text-white" />
-            </div>
-            <h1
-              className="text-2xl md:text-4xl font-bold mb-8 animate-fade-in-up"
-              data-testid="text-about-hero-title"
-            >
-              <span className="block bg-gradient-to-r from-white to-viet-earth-gold bg-clip-text text-transparent animate-gradient">
-                Our Story
-              </span>
-            </h1>
-          </div>
-        </div>
-      </section>
+      <ProductsHero
+        title="Our Story"
+        icon={<Heart className="h-6 w-6 text-white" />}
+        className="bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark"
+      />
 
       {/* Our Story */}
       <section className="py-16 md:py-24 bg-white">

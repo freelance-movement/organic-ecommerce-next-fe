@@ -26,6 +26,13 @@ import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import ProductDescription from "./components/ProductDescription";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 type ProductVariant = {
   id: string;
@@ -240,9 +247,7 @@ export default function ProductDetail() {
       product.media.images &&
       product.media.images.length > 0
     ) {
-      return product.media.images.map(
-        (img) => `${img.url ?? img}`
-      );
+      return product.media.images.map((img) => `${img.url ?? img}`);
     }
 
     // // Fallback to legacy structure
@@ -266,9 +271,7 @@ export default function ProductDetail() {
       product.media.videos &&
       product.media.videos.length > 0
     ) {
-      return product.media.videos.map(
-        (video) => `${video.url}`
-      );
+      return product.media.videos.map((video) => `${video.url}`);
     }
     return [];
   }, [product]);
@@ -708,7 +711,11 @@ export default function ProductDetail() {
                             data-testid={`button-variant-${String(v.id)}`}
                           >
                             {v.variantName || v.sku}
-                            {isOut && <span className="block text-xs text-red-500 mt-1">Out of stock</span>}
+                            {isOut && (
+                              <span className="block text-xs text-red-500 mt-1">
+                                Out of stock
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -794,7 +801,9 @@ export default function ProductDetail() {
                     >
                       <Heart
                         className={`h-4 w-4 mr-1.5 ${
-                          isFavorite ? "fill-current text-red-500" : "text-green-600"
+                          isFavorite
+                            ? "fill-current text-red-500"
+                            : "text-green-600"
                         }`}
                       />
                       Wishlist
@@ -841,7 +850,7 @@ export default function ProductDetail() {
       </section>
 
       {/* Product Details Tabs */}
-      <section className="py-16 bg-white">
+      <section className="pt-8 pb-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="description" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-xl">
@@ -859,7 +868,7 @@ export default function ProductDetail() {
               </TabsTrigger> */}
             </TabsList>
 
-            <div className="mt-12">
+            <div className="mt-4">
               <TabsContent value="description" className="space-y-8">
                 <div className="prose prose-lg max-w-none">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">
@@ -1103,16 +1112,18 @@ export default function ProductDetail() {
       </section>
 
       {/* Related Products */}
-      <section className="py-16 bg-gray-50">
+      <section className="pt-10 pb-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            Related Products
-            {product?.categories && product.categories.length > 0 && (
-              <span className="block text-lg font-normal text-gray-600 mt-2">
-                More from "{product.categories[0].name}"
-              </span>
-            )}
-          </h2>
+          <div className="text-center mb-8">
+            <span className="inline-block mb-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-viet-green-light text-viet-green-dark/90 border border-viet-green-medium/20">
+              Recommended for you
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-viet-green-dark via-viet-green-medium to-viet-earth-gold bg-clip-text text-transparent">
+              Related Products
+            </h2>
+
+            <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-gradient-to-r from-viet-green-dark to-viet-earth-gold"></div>
+          </div>
 
           {relatedLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1132,65 +1143,65 @@ export default function ProductDetail() {
               <p>No related products found in this category</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {relatedProducts.map((relatedProduct) => (
-                <Link
-                  key={relatedProduct.id}
-                  href={`/products/${relatedProduct.slug || relatedProduct.id}`}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group">
-                    <div className="aspect-square overflow-hidden">
-                      <img
-                        src={getRelatedProductImage(relatedProduct)}
-                        alt={relatedProduct.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {relatedProduct.categories
-                          ?.slice(0, 2)
-                          .map((category) => (
-                            <span
-                              key={category.id}
-                              className="text-xs bg-viet-green-light text-viet-green-dark px-2 py-1 rounded-full"
-                            >
-                              {category.name}
+            <Carousel opts={{ align: "start" }} className="relative">
+              <CarouselContent>
+                {relatedProducts.map((relatedProduct) => (
+                  <CarouselItem
+                    key={relatedProduct.id}
+                    className="sm:basis-1/2 lg:basis-1/3"
+                  >
+                    <Link
+                      href={`/products/${
+                        relatedProduct.slug || relatedProduct.id
+                      }`}
+                    >
+                      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group ring-1 ring-gray-100 hover:ring-viet-green-light">
+                        <div className="relative aspect-[16/10] overflow-hidden">
+                          <img
+                            src={getRelatedProductImage(relatedProduct)}
+                            alt={relatedProduct.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          {/* Hover gradient overlay */}
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                          {/* Hover action button */}
+                          <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-viet-green-medium text-white shadow">
+                              View details
                             </span>
-                          ))}
-                      </div>
-                      <h3 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-viet-green-dark transition-colors">
-                        {relatedProduct.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {relatedProduct.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-xl font-bold text-viet-green-dark">
-                            {formatPrice(
-                              getRelatedProductPrice(relatedProduct)
-                            )}
-                          </span>
-                          {relatedProduct.variants &&
-                            relatedProduct.variants.length > 0 && (
-                              <span className="block text-xs text-gray-500 mt-1">
-                                {relatedProduct.variants[0].variantName}
-                              </span>
-                            )}
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-gray-500">
-                            {relatedProduct.variants?.[0]?.inventoryQty} in
-                            stock
+                        <div className="p-6">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {relatedProduct.categories
+                              ?.slice(0, 2)
+                              .map((category) => (
+                                <span
+                                  key={category.id}
+                                  className="text-xs bg-viet-green-light text-viet-green-dark px-2 py-1 rounded-full text-white"
+                                >
+                                  {category.name}
+                                </span>
+                              ))}
+                          </div>
+                          <h3 className="font-semibold text-lg text-gray-900 mb-1 group-hover:text-viet-green-dark transition-colors">
+                            {relatedProduct.name}
+                          </h3>
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span>Click to view</span>
+                            <span className="underline decoration-viet-green-light/60 group-hover:decoration-viet-green-dark">
+                              \ Learn more
+                            </span>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-6 md:-left-10" />
+              <CarouselNext className="-right-6 md:-right-10" />
+            </Carousel>
           )}
         </div>
       </section>

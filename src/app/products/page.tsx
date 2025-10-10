@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import ProductsHero from "@/components/ProductsHero";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -108,7 +109,6 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   // Fetch categories once
   useEffect(() => {
     let isMounted = true;
@@ -126,12 +126,13 @@ export default function Products() {
         }
         const data = await res.json();
         const items: CategoryItem[] = data?.data || [];
-        
 
         // Check for special category that might be a parent (like "By Fruit Type")
-        const specialParent = items.find(item => 
-          item.name === "By Fruit Type" || item.slug === "by-fruit-type");
-        
+        const specialParent = items.find(
+          (item) =>
+            item.name === "By Fruit Type" || item.slug === "by-fruit-type"
+        );
+
         // Create groups with all items as top level if no parentId present in data
         let groups: CategoryGroup[] = [
           {
@@ -139,27 +140,29 @@ export default function Products() {
             name: "All Products",
             parent: null,
             children: [],
-          }
+          },
         ];
-        
+
         if (specialParent) {
           // If we found a special parent category, use it as a parent for others
-          const childCategories = items.filter(item => 
-            item.id !== specialParent.id);
-          
+          const childCategories = items.filter(
+            (item) => item.id !== specialParent.id
+          );
+
           groups.push({
             id: specialParent.id,
             name: specialParent.name,
             parent: null,
-            children: childCategories.map(item => ({ 
-              id: item.id, 
-              name: item.name 
+            children: childCategories.map((item) => ({
+              id: item.id,
+              name: item.name,
             })),
           });
-          
+
           // Also add all categories as top-level items
-          items.filter(item => item.id !== specialParent.id)
-            .forEach(item => {
+          items
+            .filter((item) => item.id !== specialParent.id)
+            .forEach((item) => {
               groups.push({
                 id: item.id,
                 name: item.name,
@@ -169,7 +172,7 @@ export default function Products() {
             });
         } else {
           // No special parent found, just add all items as top level
-          items.forEach(item => {
+          items.forEach((item) => {
             groups.push({
               id: item.id,
               name: item.name,
@@ -178,7 +181,7 @@ export default function Products() {
             });
           });
         }
-        
+
         if (isMounted) setCategories(groups);
       } catch (e: any) {
         // Keep default All Products if categories fail
@@ -203,13 +206,13 @@ export default function Products() {
         const headers = {
           "Content-Type": "application/json",
         };
-        
+
         // Create the fetch options with query parameters
         let fetchOptions: RequestInit = {
           credentials: "include",
           headers,
         };
-        
+
         // Create query parameters object
         const queryParams: Record<string, any> = {
           page: currentPage,
@@ -218,30 +221,34 @@ export default function Products() {
           sortOrder: "DESC",
           isActive: true,
           includeVariants: true,
-          includeCategories: true
+          includeCategories: true,
         };
-        
+
         // Add search query if provided
         if (searchQuery.trim()) {
           queryParams.search = searchQuery.trim();
         }
-        
+
         // Add category ID as an array parameter if selected
         if (selectedCategory !== "all") {
           queryParams.categoryIds = [selectedCategory]; // Pass as an array
         }
-        
+
         // Convert to query string
         const queryString = Object.entries(queryParams)
           .map(([key, value]) => {
             if (Array.isArray(value)) {
               // Handle array parameters - use proper encoding for arrays
-              return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+              return value
+                .map(
+                  (v) => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`
+                )
+                .join("&");
             }
             return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
           })
-          .join('&');
-        
+          .join("&");
+
         // Build final URL
         url = `${url}?${queryString}`;
         const res = await fetch(url, fetchOptions);
@@ -310,9 +317,7 @@ export default function Products() {
 
   const pickImage = (p: ProductItem) => {
     if (p.media && p.media.images && p.media.images.length > 0) {
-      return `${
-        p.media.images[0].url ?? p.media.images[0]
-      }`;
+      return `${p.media.images[0].url ?? p.media.images[0]}`;
     }
     return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
   };
@@ -350,36 +355,13 @@ export default function Products() {
       <Navigation variant="fixed" />
 
       {/* Hero Section */}
-      <section className="products-hero mt-0 md:mt-8 pt-24 pb-3 md:pt-20 md:pb-8 text-white relative overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-viet-earth-gold/10 rounded-full blur-3xl animate-float animation-delay-400"></div>
-          <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-4 animate-float shadow-2xl">
-              <ShoppingCart className="h-6 w-6 text-white" />
-            </div>
-            <h1
-              className="text-2xl md:text-4xl font-bold mb-8 animate-fade-in-up"
-              data-testid="text-products-hero-title"
-            >
-              {/* Our Premium */}
-              <span className="block bg-gradient-to-r from-white to-viet-earth-gold bg-clip-text text-transparent animate-gradient">
-                Our Products
-              </span>
-            </h1>
-          </div>
-
-          {/* Stats Section */}
-        </div>
-      </section>
+      <ProductsHero
+        title="Our Products"
+        icon={<ShoppingCart className="h-5 w-5 text-white" />}
+      />
 
       {/* Products Section */}
-      <section className="py-16 md:py-24 relative">
+      <section className="py-12  md:py-18 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           {/* Search and Filter Section */}
           <div className="mb-12 overflow-visible">
