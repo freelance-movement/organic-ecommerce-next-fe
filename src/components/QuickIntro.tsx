@@ -111,89 +111,87 @@ export default function QuickIntro() {
 
       <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
-            <Leaf className="h-6 w-6 text-white" aria-hidden="true" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
+            <Leaf className="h-8 w-8 text-white" aria-hidden="true" />
           </div>
           <h2
             id="intro-heading"
-            className="text-2xl md:text-3xl lg:text-4xl font-bold text-viet-green-dark mb-6 animate-fade-in-up"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-viet-green-dark mb-6 animate-fade-in-up"
             data-testid="text-intro-title"
           >
-            VietRoot: Where the Essence of Vietnam Converges
+            Rooted in Vietnam. Growing for the World!
           </h2>
           <div
-            className="w-32 h-2 bg-gradient-to-r from-viet-green-medium via-viet-earth-gold to-viet-green-medium mx-auto rounded-full animate-fade-in-up animation-delay-200 shadow-lg"
+            className="w-64 h-1 bg-gradient-to-r from-transparent via-viet-green-dark to-transparent mx-auto rounded-full animate-fade-in-up animation-delay-200"
             aria-hidden="true"
           ></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Story Section */}
-          <div className="animate-fade-in-up animation-delay-400">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-viet-green-light/30 relative overflow-hidden">
-              <div
-                className="absolute top-0 right-0 w-32 h-32 bg-viet-green-medium/5 rounded-full -translate-y-16 translate-x-16"
-                aria-hidden="true"
-              ></div>
-
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mx-auto">
+          {/* Left - Story Section (1/3 width) */}
+          <div className="lg:col-span-1 animate-fade-in-up animation-delay-400">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border-2 border-viet-green-light/30 relative overflow-hidden h-full flex flex-col">
               {/* Letter Header */}
-              <div className="relative mb-6">
-                <div className="text-center mb-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-3 shadow-lg">
-                    <Leaf className="h-6 w-6 text-white" aria-hidden="true" />
+              <div className="relative mb-8">
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-4 shadow-lg">
+                    <Leaf className="h-7 w-7 text-white" aria-hidden="true" />
                   </div>
-                  <p className="text-sm text-gray-500 italic">
+                  <p className="text-sm text-gray-600 mb-2">
                     A Letter from VietRoot
                   </p>
+                  <h3 className="text-2xl font-bold text-viet-green-dark mb-2 font-serif">
+                    Our Story, Our Promise
+                  </h3>
                 </div>
-
-                <h3 className="text-2xl font-bold text-viet-green-dark mb-4 text-center font-serif">
-                  Our Story, Our Promise
-                </h3>
               </div>
 
-              {/* Letter Content - Shortened */}
-              <div className="relative text-gray-700">
-                <p className="text-lg leading-relaxed font-medium italic mb-4 text-center">
-                  "Dear Friends,"
+              {/* Letter Content */}
+              <div className="relative text-gray-800 flex-grow">
+                <p className="text-base leading-relaxed mb-4">
+                  Dear friends,
                 </p>
 
                 <div
-                  className="text-base leading-relaxed space-y-3"
+                  className="text-base leading-relaxed space-y-4 text-justify"
                   data-testid="text-intro-description"
                 >
                   <p>
-                    VietRoot was born from a profound realization: we were
-                    losing touch with the essence of Vietnamese agriculture in
-                    our rush toward modernization.
+                    VietRoot began with a simple belief: the soul of Vietnamese 
+                    agriculture deserves a place on the world's shelf. Walking the 
+                    rice fields and fruit orchards of our Mekong and Red River Deltas, 
+                    we met farmers whose care and craft never wavered, even as the 
+                    world rushed ahead.
                   </p>
 
                   <p>
-                    Walking through my grandmother's abandoned rice fields in
-                    the Mekong Delta changed everything. Today, we connect you
-                    with passionate farmers who still believe in organic,
-                    sustainable farming filled with love.
+                    Today, we partner with those families to champion sustainable 
+                    farming, full traceability, and authentic flavor. Every harvest is 
+                    selected with intention. Every snack is made to be clean, vibrant, 
+                    and true to its roots.
                   </p>
 
-                  <p className="italic">
-                    Every product tells a story of dedication, bringing you
-                    flavors that carry the soul of Vietnam in every bite.
+                  <p>
+                    Every bite carries a story, from Vietnamese soil to you.
                   </p>
                 </div>
 
-                <div className="text-center mt-6">
+                <div className="mt-8">
+                  <p className="text-base font-medium text-viet-green-dark">
+                    With gratitude,
+                  </p>
                   <p className="text-base font-semibold text-viet-green-dark">
-                    With gratitude, The VietRoot Family
+                    The VietRoot Family
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right - Image Slider Section */}
-          <div className="animate-fade-in-up animation-delay-600">
-            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl p-4 shadow-2xl border border-viet-green-light/30">
-              <div className="relative h-96 rounded-2xl overflow-hidden">
+          {/* Right - Image Section (2/3 width) */}
+          <div className="lg:col-span-2 animate-fade-in-up animation-delay-600">
+            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-viet-green-light/30 overflow-hidden h-full min-h-[600px]">
+              <div className="relative h-full rounded-2xl overflow-hidden">
                 {images.map((image, index) => (
                   <div
                     key={index}
@@ -206,15 +204,15 @@ export default function QuickIntro() {
                     <img
                       src={image.url}
                       alt={image.alt}
-                      className="w-full h-full object-cover rounded-2xl"
+                      className="w-full h-full object-cover"
                       data-testid={`img-farmer-${index}`}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-2xl"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    {/* <div className="absolute bottom-6 left-6 right-6">
                       <p className="text-white font-semibold text-lg drop-shadow-lg">
                         {image.caption}
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 ))}
 
@@ -223,33 +221,33 @@ export default function QuickIntro() {
                   variant="ghost"
                   size="sm"
                   onClick={prevImage}
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full w-10 h-10 p-0 transition-all duration-300"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/30 backdrop-blur-sm hover:bg-white/50 text-white rounded-full w-12 h-12 p-0 transition-all duration-300"
                   data-testid="button-prev-image"
                 >
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="h-6 w-6" />
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={nextImage}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full w-10 h-10 p-0 transition-all duration-300"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/30 backdrop-blur-sm hover:bg-white/50 text-white rounded-full w-12 h-12 p-0 transition-all duration-300"
                   data-testid="button-next-image"
                 >
-                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="h-6 w-6" />
                 </Button>
               </div>
 
               {/* Dot Indicators */}
-              <div className="flex justify-center space-x-2 mt-6">
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex justify-center space-x-2 z-10">
                 {images.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
                       index === currentImageIndex
-                        ? "bg-viet-green-medium scale-125 shadow-lg"
-                        : "bg-gray-300 hover:bg-gray-400"
+                        ? "bg-white scale-125 shadow-lg"
+                        : "bg-white/50 hover:bg-white/80"
                     }`}
                     data-testid={`dot-indicator-${index}`}
                   />
