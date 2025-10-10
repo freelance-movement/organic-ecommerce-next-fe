@@ -225,13 +225,17 @@ export default function FeaturedProducts() {
         {/* Product Slider - One Row Only */}
         <div className="relative">
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-viet-green-light/30">
-            <div className="relative overflow-hidden rounded-2xl">
+            <div className="relative overflow-hidden rounded-2xl py-3">
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="flex flex-nowrap gap-6 px-4">
                   {Array.from({ length: productsPerSlide }).map((_, idx) => (
                     <div
                       key={idx}
-                      className="bg-white rounded-2xl shadow-lg h-80 animate-pulse"
+                      className="bg-white rounded-2xl shadow-md h-80 animate-pulse flex-shrink-0"
+                      style={{ 
+                        width: `calc((100% - ${(productsPerSlide - 1) * 24}px) / ${productsPerSlide})`,
+                        minWidth: '200px'
+                      }}
                     />
                   ))}
                 </div>
@@ -248,7 +252,7 @@ export default function FeaturedProducts() {
                 >
                   {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                     <div key={slideIndex} className="w-full flex-shrink-0">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
+                      <div className="flex flex-nowrap gap-6 px-4">
                         {products
                           .slice(
                             slideIndex * productsPerSlide,
@@ -257,7 +261,11 @@ export default function FeaturedProducts() {
                           .map((product) => (
                             <div
                               key={product.id}
-                              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group relative border border-gray-100 cursor-pointer"
+                              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden group relative border border-gray-100 cursor-pointer flex-shrink-0"
+                              style={{ 
+                                width: `calc((100% - ${(productsPerSlide - 1) * 24}px) / ${productsPerSlide})`,
+                                minWidth: '200px'
+                              }}
                               data-testid={`card-product-${product.id}`}
                               onClick={() => handleProductClick(product)}
                             >
