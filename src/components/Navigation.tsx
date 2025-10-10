@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Leaf, Menu, X, Mail } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Leaf, Menu, X, Mail, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,9 @@ interface NavigationProps {
  */
 export default function Navigation({ variant = "absolute" }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,6 +28,31 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (!isSearchOpen) {
+      // Focus input when opening
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      closeMobileMenu();
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
   };
 
   const scrollToNewsletter = () => {
@@ -162,7 +190,19 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
           </div>
 
           {/* Call to Action and Mobile Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            {/* Search Button */}
+            <Button
+              onClick={toggleSearch}
+              variant="ghost"
+              size="sm"
+              className="text-gray-700 hover:text-viet-green-medium hover:bg-gray-50 transition-colors duration-200"
+              data-testid="button-search"
+              aria-label="Search products"
+            >
+              <Search className="h-5 w-5" aria-hidden="true" />
+            </Button>
+
             <Button
               onClick={scrollToNewsletter}
               className="bg-viet-green-medium hover:bg-viet-green-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center"
@@ -193,6 +233,59 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
             </Button>
           </div>
         </div>
+
+        {/* Search Bar - Desktop & Mobile */}
+        {isSearchOpen && (
+          <div className="absolute top-full left-0 right-0 mt-2 px-2 sm:px-4 lg:px-8 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="bg-white rounded-lg shadow-2xl border border-gray-200 p-4 max-w-2xl mx-auto">
+              <form onSubmit={handleSearch} className="relative">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={handleSearchKeyDown}
+                      placeholder="Search for products..."
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-viet-green-medium focus:border-transparent transition-all duration-200"
+                      data-testid="search-input"
+                      aria-label="Search products"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="bg-viet-green-medium hover:bg-viet-green-dark text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 whitespace-nowrap"
+                    data-testid="search-submit"
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchQuery("");
+                    }}
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-500 hover:text-gray-700"
+                    data-testid="search-close"
+                    aria-label="Close search"
+                  >
+                    <X className="h-5 w-5" aria-hidden="true" />
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Press <kbd className="px-2 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded">ESC</kbd> to close
+                </p>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (

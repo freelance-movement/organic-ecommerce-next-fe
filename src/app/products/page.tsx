@@ -1,7 +1,8 @@
 "use client";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ShoppingCart,
   Filter,
@@ -90,7 +91,25 @@ type ProductItem = {
   categories?: ProductCategory[];
 };
 
-export default function Products() {
+// Component to handle search params
+function SearchParamsHandler({ 
+  onSearchQueryChange 
+}: { 
+  onSearchQueryChange: (query: string) => void 
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+    if (searchFromUrl) {
+      onSearchQueryChange(searchFromUrl);
+    }
+  }, [searchParams, onSearchQueryChange]);
+
+  return null;
+}
+
+function ProductsContent() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -346,11 +365,14 @@ export default function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e6f5dc]">
+    <div className="min-h-screen bg-gray-50">
       <Navigation variant="fixed" />
+      <Suspense fallback={null}>
+        <SearchParamsHandler onSearchQueryChange={setSearchQuery} />
+      </Suspense>
 
       {/* Hero Section */}
-      <section className="products-hero pt-20 pb-3 md:pt-24 md:pb-8 text-white relative overflow-hidden">
+      <section className="relative bg-gradient-to-br from-viet-green-dark to-viet-green-medium text-white py-16 md:py-24 overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
@@ -395,7 +417,7 @@ export default function Products() {
                   </div>
                   <Input
                     type="text"
-                    placeholder="🔍 Search products by name or description..."
+                    placeholder="Search products by name or description..."
                     value={searchQuery}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -1120,5 +1142,21 @@ export default function Products() {
 
       <Footer />
     </div>
+  );
+}
+
+// Main export with Suspense boundary
+export default function Products() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-viet-green-medium mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
