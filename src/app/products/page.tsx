@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
 import {
   ShoppingCart,
   Filter,
@@ -117,6 +118,9 @@ function ProductsContent() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const productsPerPage = 9;
   const categoriesPerPage = 8; // 2 rows of 4 categories each
+
+  // Debounce search query with 500ms delay
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
 
   const [categories, setCategories] = useState<CategoryGroup[]>([
     { id: "all", name: "All Products", parent: null, children: [] },
@@ -241,8 +245,8 @@ function ProductsContent() {
         };
         
         // Add search query if provided
-        if (searchQuery.trim()) {
-          queryParams.search = searchQuery.trim();
+        if (debouncedSearchQuery.trim()) {
+          queryParams.search = debouncedSearchQuery.trim();
         }
         
         // Add category ID as an array parameter if selected
@@ -292,7 +296,7 @@ function ProductsContent() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, searchQuery, selectedCategory]);
+  }, [currentPage, debouncedSearchQuery, selectedCategory]);
 
   // Get visible categories (with pagination)
   const visibleCategories = useMemo(() => {
