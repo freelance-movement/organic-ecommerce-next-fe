@@ -1115,7 +1115,7 @@ export default function ProductDetail() {
       <section className="pt-10 pb-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <span className="inline-block mb-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-viet-green-light text-viet-green-dark/90 border border-viet-green-medium/20">
+            <span className="inline-block mb-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-viet-green-light text-viet-green-dark/90 border border-viet-green-medium/20 text-white">
               Recommended for you
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-viet-green-dark via-viet-green-medium to-viet-earth-gold bg-clip-text text-transparent">
@@ -1126,13 +1126,15 @@ export default function ProductDetail() {
           </div>
 
           {relatedLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {Array.from({ length: 3 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-2xl shadow-lg h-80 animate-pulse"
-                />
-              ))}
+            <div className="py-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-2xl shadow-md h-80 animate-pulse"
+                  />
+                ))}
+              </div>
             </div>
           ) : relatedError ? (
             <div className="text-center text-red-600 py-8">
@@ -1144,19 +1146,19 @@ export default function ProductDetail() {
             </div>
           ) : (
             <Carousel opts={{ align: "start" }} className="relative">
-              <CarouselContent>
+              <CarouselContent className="py-4">
                 {relatedProducts.map((relatedProduct) => (
                   <CarouselItem
                     key={relatedProduct.id}
-                    className="sm:basis-1/2 lg:basis-1/3"
+                    className="sm:basis-1/2 lg:basis-1/3 px-2"
                   >
                     <Link
                       href={`/products/${
                         relatedProduct.slug || relatedProduct.id
                       }`}
                     >
-                      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden group ring-1 ring-gray-100 hover:ring-viet-green-light">
-                        <div className="relative aspect-[16/10] overflow-hidden">
+                      <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 group ring-1 ring-gray-100 hover:ring-viet-green-light h-full">
+                        <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
                           <img
                             src={getRelatedProductImage(relatedProduct)}
                             alt={relatedProduct.name}
@@ -1165,13 +1167,13 @@ export default function ProductDetail() {
                           {/* Hover gradient overlay */}
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                           {/* Hover action button */}
-                          <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                             <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-viet-green-medium text-white shadow">
                               View details
                             </span>
                           </div>
                         </div>
-                        <div className="p-6">
+                        <div className="p-6 relative z-10 bg-white rounded-b-2xl">
                           <div className="flex flex-wrap gap-1 mb-2">
                             {relatedProduct.categories
                               ?.slice(0, 2)
@@ -1190,7 +1192,7 @@ export default function ProductDetail() {
                           <div className="flex items-center justify-between text-xs text-gray-500">
                             <span>Click to view</span>
                             <span className="underline decoration-viet-green-light/60 group-hover:decoration-viet-green-dark">
-                              \ Learn more
+                              Learn more
                             </span>
                           </div>
                         </div>
