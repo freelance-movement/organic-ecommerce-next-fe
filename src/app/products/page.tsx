@@ -350,7 +350,7 @@ export default function Products() {
       <Navigation variant="fixed" />
 
       {/* Hero Section */}
-      <section className="products-hero mt-0 md:mt-8 pt-24 pb-3 md:pt-20 md:pb-8 text-white relative overflow-hidden">
+      <section className="products-hero pt-20 pb-3 md:pt-24 md:pb-8 text-white relative overflow-hidden">
         {/* Background Decorations */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-float"></div>
