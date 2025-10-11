@@ -174,30 +174,11 @@ export default function OurFarm() {
       </div>
 
       <div className="relative max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
-            <Sprout className="h-6 w-6 text-white" />
-          </div>
-          <h2
-            className="text-2xl md:text-3xl lg:text-4xl font-bold text-viet-green-dark mb-6 animate-fade-in-up"
-            data-testid="text-farm-title"
-          >
-            Our Farm
-          </h2>
-          <p
-            className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto animate-fade-in-up animation-delay-200"
-            data-testid="text-farm-subtitle"
-          >
-            Discover the authentic farming practices that make our products
-            extraordinary
-          </p>
-          <div className="w-32 h-2 bg-gradient-to-r from-viet-green-medium to-viet-earth-gold mx-auto rounded-full mt-6 animate-fade-in-up animation-delay-400 shadow-lg"></div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Video Player */}
-          <div className="animate-fade-in-up animation-delay-400">
-            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-viet-green-light/30">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+          {/* Left Side - Video and Images (2/3 width) */}
+          <div className="lg:col-span-2 animate-fade-in-up animation-delay-400">
+            {/* Main Video Player */}
+            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-viet-green-light/30 mb-6">
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-black">
                 {/* Video/Thumbnail Display */}
                 {isPlaying ? (
@@ -239,19 +220,6 @@ export default function OurFarm() {
                         <Play className="h-8 w-8 ml-1" />
                       </Button>
                     </div>
-
-                    {/* Video Info Overlay */}
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="bg-black/60 backdrop-blur-sm rounded-lg p-3">
-                        <h3 className="text-white font-semibold text-lg">
-                          {currentVideoData.title}
-                        </h3>
-                        <div className="flex items-center justify-between text-white/80 text-sm mt-1">
-                          <span>{currentVideoData.location}</span>
-                          <span>{currentVideoData.duration}</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 )}
 
@@ -276,65 +244,98 @@ export default function OurFarm() {
                   <ChevronRight className="h-5 w-5" />
                 </Button>
               </div>
+            </div>
 
-              {/* Video Dots Indicator */}
-              <div className="flex justify-center space-x-3 mt-6">
-                {(usingDynamic ? dynamicVideos : farmVideos).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToVideo(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentVideo
-                        ? "bg-viet-green-medium scale-125 shadow-lg"
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    data-testid={`video-dot-${index}`}
+            {/* Three Thumbnail Images Below */}
+            <div className="grid grid-cols-3 gap-4">
+              {farmVideos.slice(0, 3).map((video, index) => (
+                <button
+                  key={video.id}
+                  onClick={() => goToVideo(index)}
+                  className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-105 ${
+                    index === currentVideo
+                      ? "border-viet-green-medium shadow-lg"
+                      : "border-gray-200 hover:border-viet-green-light"
+                  }`}
+                  data-testid={`video-thumbnail-button-${index}`}
+                >
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="w-full h-full object-cover"
                   />
-                ))}
-              </div>
+                  <div className="absolute inset-0 bg-black/20 hover:bg-black/30 transition-colors" />
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Right - Video Description */}
-          <div className="animate-fade-in-up animation-delay-600">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-viet-green-light/30 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-viet-green-medium/5 rounded-full -translate-y-16 translate-x-16"></div>
+          {/* Right Side - Content (1/3 width) */}
+          <div className="lg:col-span-1 animate-fade-in-up animation-delay-600">
+            <div className="relative flex flex-col items-center text-center">
+              {/* Icon */}
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 animate-float shadow-2xl">
+                <Sprout className="h-6 w-6 text-white" />
+              </div>
 
-              <div className="relative">
-                <div className="mb-6">
-                  <span className="inline-block bg-viet-green-medium/10 text-viet-green-dark px-3 py-1 rounded-full text-sm font-medium mb-4">
-                    {currentVideoData.location}
-                  </span>
-                  <h3
-                    className="text-2xl lg:text-3xl font-bold text-viet-green-dark mb-4"
-                    data-testid="text-current-video-title"
-                  >
-                    {currentVideoData.title}
-                  </h3>
+              {/* Title */}
+              <h2
+                className="text-3xl md:text-4xl lg:text-5xl font-bold text-viet-green-dark mb-4"
+                data-testid="text-farm-title"
+              >
+                Our Farm
+              </h2>
+
+              {/* Underline */}
+              <div className="w-32 h-1 bg-gradient-to-r from-viet-green-medium to-viet-earth-gold rounded-full mb-6 shadow-lg"></div>
+
+              {/* Subtitle */}
+              <h3 className="text-xl md:text-2xl font-semibold text-viet-green-dark mb-8">
+                Bridging Vietnam's trusted growers to the world
+              </h3>
+
+              {/* Description */}
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-8 text-left w-full">
+                At VIETROOT, we proudly connect skilled, responsible farms across Vietnam with snack lovers everywhere. We champion sustainable methods, full traceability, and fair partnerships, so every bite carries the pride of Vietnamese agriculture from farm to snack.
+              </p>
+
+              {/* By the numbers */}
+              <h4 className="text-lg font-semibold text-viet-green-dark mb-4 text-left w-full">
+                By the numbers
+              </h4>
+
+              {/* Stats with Icons */}
+              <div className="space-y-4 w-full">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-viet-green-dark rounded-full flex items-center justify-center">
+                    <Sprout className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-base text-gray-700 leading-relaxed">
+                      <span className="font-semibold">50+ Partner Farms</span> across key growing regions
+                    </p>
+                  </div>
                 </div>
 
-                <p
-                  className="text-lg text-gray-700 leading-relaxed mb-6"
-                  data-testid="text-current-video-description"
-                >
-                  {currentVideoData.description}
-                </p>
-
-                {/* Farm Stats */}
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  <div className="bg-viet-green-light/20 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-viet-green-dark">
-                      50+
-                    </div>
-                    <div className="text-sm text-gray-600">Partner Farms</div>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-viet-green-dark rounded-full flex items-center justify-center">
+                    <Sprout className="h-5 w-5 text-white" />
                   </div>
-                  <div className="bg-viet-earth-gold/20 rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-viet-green-dark">
-                      100%
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Organic Certified
-                    </div>
+                  <div>
+                    <p className="text-base text-gray-700 leading-relaxed">
+                      <span className="font-semibold">100% VietGAP Standard</span> for products we source
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-viet-green-dark rounded-full flex items-center justify-center">
+                    <Sprout className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-base text-gray-700 leading-relaxed">
+                      <span className="font-semibold">70% USDA Organic</span> Certified and growing
+                    </p>
                   </div>
                 </div>
               </div>
