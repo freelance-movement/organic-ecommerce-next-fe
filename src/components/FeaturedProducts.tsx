@@ -71,13 +71,15 @@ export default function FeaturedProducts() {
   const [products, setProducts] = useState<BackendProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  );
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -123,7 +125,7 @@ export default function FeaturedProducts() {
   const productsPerSlide = useMemo(() => {
     if (windowWidth >= 1280) return 4; // xl: 4 products (reduced from 5)
     if (windowWidth >= 1024) return 3; // lg: 3 products
-    if (windowWidth >= 640) return 2;  // sm: 2 products
+    if (windowWidth >= 640) return 2; // sm: 2 products
     return 1; // mobile: 1 product
   }, [windowWidth]);
 
@@ -186,9 +188,7 @@ export default function FeaturedProducts() {
 
   const pickImage = (p: BackendProduct) => {
     if (p.media && p.media.images && p.media.images.length > 0) {
-      return `${
-        p.media.images[0].url ?? p.media.images[0]
-      }`;
+      return `${p.media.images[0].url ?? p.media.images[0]}`;
     }
     return "https://images.unsplash.com/photo-1553279030-83ba509d4d48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300";
   };
@@ -232,9 +232,11 @@ export default function FeaturedProducts() {
                     <div
                       key={idx}
                       className="bg-white rounded-2xl shadow-md h-80 animate-pulse flex-shrink-0"
-                      style={{ 
-                        width: `calc((100% - ${(productsPerSlide - 1) * 24}px) / ${productsPerSlide})`,
-                        minWidth: '200px'
+                      style={{
+                        width: `calc((100% - ${
+                          (productsPerSlide - 1) * 24
+                        }px) / ${productsPerSlide})`,
+                        minWidth: "200px",
                       }}
                     />
                   ))}
@@ -262,9 +264,11 @@ export default function FeaturedProducts() {
                             <div
                               key={product.id}
                               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden group relative border border-gray-100 cursor-pointer flex-shrink-0"
-                              style={{ 
-                                width: `calc((100% - ${(productsPerSlide - 1) * 24}px) / ${productsPerSlide})`,
-                                minWidth: '200px'
+                              style={{
+                                width: `calc((100% - ${
+                                  (productsPerSlide - 1) * 24
+                                }px) / ${productsPerSlide})`,
+                                minWidth: "200px",
                               }}
                               data-testid={`card-product-${product.id}`}
                               onClick={() => handleProductClick(product)}
@@ -296,10 +300,10 @@ export default function FeaturedProducts() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                               </div>
 
-                              <div className="p-6 space-y-4">
+                              <div className="p-6 space-y-2">
                                 {/* Price Section */}
                                 <div className="flex items-center justify-between">
-                                  <div className="flex flex-col">
+                                  {/* <div className="flex flex-col">
                                     <span
                                       className="text-2xl font-bold text-viet-green-medium"
                                       data-testid={`text-product-price-${product.id}`}
@@ -312,9 +316,9 @@ export default function FeaturedProducts() {
                                           {product.variants[0].variantName}
                                         </span>
                                       )}
-                                  </div>
+                                  </div> */}
 
-                                  <Button
+                                  {/* <Button
                                     size="sm"
                                     className="bg-gradient-to-r from-viet-green-medium to-viet-green-dark hover:from-viet-green-dark hover:to-viet-green-medium text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     data-testid={`button-add-to-cart-${product.id}`}
@@ -330,7 +334,7 @@ export default function FeaturedProducts() {
                                   >
                                     <ShoppingCart className="h-4 w-4 mr-1" />
                                     Add
-                                  </Button>
+                                  </Button> */}
                                 </div>
 
                                 <h3

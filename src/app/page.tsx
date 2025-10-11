@@ -117,7 +117,7 @@ export default function Home() {
 
         <OurFarm />
 
-        <Partnership />
+        {/* <Partnership /> */}
 
         <NewsletterSignup />
 

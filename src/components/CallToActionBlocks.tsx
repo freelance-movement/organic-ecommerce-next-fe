@@ -1,5 +1,6 @@
 import { ShoppingBasket, Handshake, Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const ctaBlocks = [
   {
@@ -11,6 +12,7 @@ const ctaBlocks = [
     buttonText: "Go to Store",
     buttonColor: "bg-viet-green-dark hover:bg-viet-green-medium",
     iconBg: "bg-viet-green-medium",
+    href: "/products",
   },
   {
     id: 2,
@@ -21,6 +23,7 @@ const ctaBlocks = [
     buttonText: "Learn About Partnership",
     buttonColor: "bg-viet-earth-gold hover:bg-viet-earth-orange",
     iconBg: "bg-viet-earth-gold",
+    href: "/partnerships",
   },
   {
     id: 3,
@@ -31,6 +34,7 @@ const ctaBlocks = [
     buttonText: "Read More",
     buttonColor: "bg-viet-green-light hover:bg-viet-green-medium",
     iconBg: "bg-viet-green-light",
+    href: "/about",
   },
 ];
 
@@ -67,12 +71,14 @@ export default function CallToActionBlocks() {
                 >
                   {block.description}
                 </p>
-                <Button
-                  className={`${block.buttonColor} text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200`}
-                  data-testid={`button-cta-${block.id}`}
-                >
-                  {block.buttonText}
-                </Button>
+                <Link href={block.href}>
+                  <Button
+                    className={`${block.buttonColor} text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200`}
+                    data-testid={`button-cta-${block.id}`}
+                  >
+                    {block.buttonText}
+                  </Button>
+                </Link>
               </div>
             );
           })}

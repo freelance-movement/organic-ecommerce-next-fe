@@ -2,55 +2,13 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import { Handshake, TrendingUp, Globe, Download, Send } from "lucide-react";
+import { Handshake, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import ProductsHero from "@/components/ProductsHero";
-
-const benefits = [
-  {
-    icon: TrendingUp,
-    title: "Premium Quality Products",
-    description:
-      "Access to Vietnam's finest organic products with guaranteed quality and traceability.",
-  },
-  {
-    icon: Globe,
-    title: "Growing Market Demand",
-    description:
-      "Tap into the rapidly expanding organic and wellness market worldwide.",
-  },
-  {
-    icon: Handshake,
-    title: "Reliable Partnership",
-    description:
-      "Work with a trusted partner committed to long-term relationships and mutual success.",
-  },
-];
-
-const partnershipTypes = [
-  {
-    title: "Distributor",
-    description:
-      "Become a regional distributor for VietRoot products in your market.",
-    minOrder: "Minimum order: ₫10,000,000",
-    benefits: ["Wholesale pricing", "Marketing support", "Exclusive territory"],
-  },
-  {
-    title: "Retail Partner",
-    description: "Stock VietRoot products in your store or online marketplace.",
-    minOrder: "Minimum order: ₫2,000,000",
-    benefits: ["Competitive margins", "Product training", "Display materials"],
-  },
-  {
-    title: "Franchise",
-    description: "Join us in expanding VietRoot's global reach and impact.",
-    minOrder: "Investment from: $50,000 USD",
-    benefits: ["Brand recognition", "Operational support", "Training programs"],
-  },
-];
+import Partnership from "@/components/Partnership";
 
 export default function Partnerships() {
   const [formData, setFormData] = useState({
@@ -242,173 +200,29 @@ export default function Partnerships() {
         className="bg-gradient-to-br from-viet-green-dark via-viet-green-medium to-viet-green-dark"
       />
 
-      {/* Value Proposition */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2
-              className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-4"
-              data-testid="text-why-partner-title"
-            >
-              Why Partner With VietRoot?
-            </h2>
-            <p
-              className="text-lg text-gray-600 max-w-3xl mx-auto"
-              data-testid="text-why-partner-subtitle"
-            >
-              We're more than a supplier – we're your partner in building a
-              sustainable, profitable business in the organic products market.
+      {/* Partnership Section */}
+      <Partnership />
+
+      {/* Transition Section */}
+      <section className="py-12 md:py-16 bg-gradient-to-br from-viet-green-light/10 via-white to-viet-earth-gold/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-viet-green-medium to-viet-green-dark rounded-full mb-6 shadow-lg">
+              <Handshake className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-viet-green-dark mb-4">
+              Ready to Partner With Us?
+            </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              Join our growing network of partners and help us bring fresh,
+              organic Vietnamese produce to communities worldwide.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.icon;
-              return (
-                <div
-                  key={index}
-                  className="text-center p-8 bg-viet-earth-cream rounded-xl"
-                  data-testid={`benefit-${index}`}
-                >
-                  <IconComponent className="text-viet-green-medium h-16 w-16 mx-auto mb-6" />
-                  <h3
-                    className="text-xl font-semibold text-viet-green-dark mb-4"
-                    data-testid={`benefit-title-${index}`}
-                  >
-                    {benefit.title}
-                  </h3>
-                  <p
-                    className="text-gray-700"
-                    data-testid={`benefit-description-${index}`}
-                  >
-                    {benefit.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Partnership Types */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2
-              className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-4"
-              data-testid="text-partnership-types-title"
-            >
-              Partnership Opportunities
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {partnershipTypes.map((type, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300"
-                data-testid={`partnership-type-${index}`}
-              >
-                <h3
-                  className="text-2xl font-bold text-viet-green-dark mb-4"
-                  data-testid={`partnership-title-${index}`}
-                >
-                  {type.title}
-                </h3>
-                <p
-                  className="text-gray-700 mb-4"
-                  data-testid={`partnership-description-${index}`}
-                >
-                  {type.description}
-                </p>
-                <p
-                  className="text-viet-earth-gold font-semibold mb-6"
-                  data-testid={`partnership-min-order-${index}`}
-                >
-                  {type.minOrder}
-                </p>
-                <ul className="space-y-2">
-                  {type.benefits.map((benefit, benefitIndex) => (
-                    <li
-                      key={benefitIndex}
-                      className="flex items-center text-gray-600"
-                      data-testid={`partnership-benefit-${index}-${benefitIndex}`}
-                    >
-                      <div className="w-2 h-2 bg-viet-green-medium rounded-full mr-3"></div>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Download Resources */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2
-            className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-8"
-            data-testid="text-resources-title"
-          >
-            Partnership Resources
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-viet-earth-cream rounded-xl p-8">
-              <Download className="text-viet-green-medium h-12 w-12 mx-auto mb-4" />
-              <h3
-                className="text-xl font-semibold text-viet-green-dark mb-4"
-                data-testid="text-wholesale-linesheet-title"
-              >
-                Wholesale Line Sheet
-              </h3>
-              <p
-                className="text-gray-700 mb-6"
-                data-testid="text-wholesale-linesheet-description"
-              >
-                Download our complete product catalog with wholesale pricing and
-                specifications.
-              </p>
-              <Button
-                className="bg-viet-green-medium hover:bg-viet-green-dark text-white"
-                data-testid="button-download-linesheet"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Line Sheet
-              </Button>
-            </div>
-
-            <div className="bg-viet-earth-cream rounded-xl p-8">
-              <Download className="text-viet-green-medium h-12 w-12 mx-auto mb-4" />
-              <h3
-                className="text-xl font-semibold text-viet-green-dark mb-4"
-                data-testid="text-investor-deck-title"
-              >
-                Investor Pitch Deck
-              </h3>
-              <p
-                className="text-gray-700 mb-6"
-                data-testid="text-investor-deck-description"
-              >
-                Access our investor presentation with market analysis and growth
-                projections.
-              </p>
-              <Button
-                className="bg-viet-green-medium hover:bg-viet-green-dark text-white"
-                data-testid="button-download-pitchdeck"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Pitch Deck
-              </Button>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Form */}
-      <section className="py-16 md:py-24 bg-gray-50">
+      <section id="contact-form" className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
             <div className="text-center mb-8">
@@ -556,11 +370,8 @@ export default function Partnerships() {
                 >
                   <option value="">Select partnership type</option>
                   <option value="Distributor">Distributor</option>
-                  <option value="Supplier">Supplier</option>
-                  <option value="Franchise">Franchise</option>
+                  <option value="Farm Partner">Farm Partner</option>
                   <option value="Retail Partner">Retail Partner</option>
-                  <option value="Marketing Partner">Marketing Partner</option>
-                  <option value="Technology Partner">Technology Partner</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
