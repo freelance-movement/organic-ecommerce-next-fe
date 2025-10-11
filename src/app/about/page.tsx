@@ -134,7 +134,7 @@ export default function About() {
       </section>
 
       {/* Our Founder Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-white to-viet-earth-cream">
+      <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Text content */}
@@ -168,9 +168,9 @@ export default function About() {
             {/* Right side - Founder Image */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md">
+                <div className="bg-white rounded-2xl overflow-hidden max-w-xl w-full">
                   <img
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000"
+                    src="/our-founder.png"
                     alt="VietRoot Founder"
                     className="w-full h-auto object-cover"
                     data-testid="img-founder"
