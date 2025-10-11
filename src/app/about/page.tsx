@@ -218,7 +218,7 @@ export default function About() {
       <MissionVision />
 
       {/* Our Vision Timeline */}
-      <section className="py-16 md:py-24 bg-white">
+      {/* <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2
@@ -270,18 +270,23 @@ export default function About() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Values Section */}
       <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2
-              className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-4"
+              className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-6"
               data-testid="text-values-section-title"
             >
               What Drives Us
             </h2>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+              <div className="w-3 h-3 bg-viet-green-dark rounded-full"></div>
+              <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -291,8 +296,7 @@ export default function About() {
                 Quality First
               </h3>
               <p className="text-gray-600">
-                Every product is carefully selected and tested to meet our high
-                standards.
+                 Standards-led sourcing and minimal processing to protect natural taste, 100% VietGAP across our sourced products, 70% USDA Organic and growing, with batch-level QC for consistency.
               </p>
             </div>
 
@@ -302,7 +306,7 @@ export default function About() {
                 Community Impact
               </h3>
               <p className="text-gray-600">
-                Supporting local farmers and sustainable agricultural practices.
+                Fair, long-term partnerships with 50+ farm partners: technical support, transparent pricing, and QR traceability so recognition follows the people who grow your food.
               </p>
             </div>
 
@@ -312,8 +316,7 @@ export default function About() {
                 Cultural Heritage
               </h3>
               <p className="text-gray-600">
-                Preserving and sharing the rich agricultural traditions of
-                Vietnam.
+                 We celebrate Vietnam’s regions, seasons, and stories, bringing authentic flavors from our river deltas and highlands to your table, proudly Rooted in Vietnam. Growing for the World.
               </p>
             </div>
           </div>
