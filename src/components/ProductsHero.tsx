@@ -15,7 +15,7 @@ export default function ProductsHero({
 }: ProductsHeroProps) {
   return (
     <section
-      className={`products-hero mt-8 md:mt-10 pt-12 pb-4 md:pt-12 md:pb-4 text-white relative overflow-hidden ${
+      className={`products-hero mt-12 md:mt-10 pt-12  md:pt-12  text-white relative overflow-hidden ${
         className || ""
       }`}
     >
