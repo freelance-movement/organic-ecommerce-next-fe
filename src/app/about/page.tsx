@@ -87,52 +87,103 @@ export default function About() {
       />
 
       {/* Our Story */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2
+              className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-4"
+              data-testid="text-story-title"
+            >
+              Our Brand Story
+            </h2>
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+              <div className="w-3 h-3 bg-viet-green-dark rounded-full"></div>
+              <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2
-                className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-6"
-                data-testid="text-story-title"
+              <h3
+                className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-6 leading-tight"
+                data-testid="text-story-subtitle"
               >
-                Born from Vietnamese Soil
-              </h2>
-              <div className="space-y-4 text-lg text-gray-700">
+                Rooted in Vietnam.
+                <br />
+                Growing for the world!
+              </h3>
+              <div className="space-y-4 text-lg md:text-xl text-gray-700 leading-relaxed lg:leading-loose">
                 <p data-testid="text-story-paragraph-1">
-                  VietRoot began as a passion project in the heart of Vietnam's
-                  agricultural regions. Our founders, deeply connected to the
-                  land and its traditions, witnessed the incredible quality of
-                  organic products grown by local farmers.
-                </p>
-                <p data-testid="text-story-paragraph-2">
-                  We saw an opportunity to bridge the gap between these
-                  dedicated farmers and conscious consumers around the world.
-                  Our mission became clear: to create a sustainable platform
-                  that honors Vietnamese agricultural heritage while meeting the
-                  growing global demand for authentic, organic products.
-                </p>
-                <p data-testid="text-story-paragraph-3">
-                  Today, VietRoot stands as a testament to the power of
-                  community, quality, and cultural authenticity. Every product
-                  we offer tells a story of Vietnamese craftsmanship and natural
-                  excellence.
+                  VietRoot curates Vietnam's native bounty, from river deltas to highlands and turns seasonal harvests into light, vibrant fruit snacks. We work directly with trusted growers, keep processing minimal to preserve natural character, and make origin easy to understand. The result is flavor that feels fresh from the orchard and a supply chain you can feel proud of.
                 </p>
               </div>
             </div>
             <div>
-              <img
-                src="https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Vietnamese farmers working in organic fields"
-                className="rounded-xl shadow-lg w-full"
-                data-testid="img-story"
-              />
+              <div className="border-2 border-viet-green-dark rounded-3xl p-4 h-[500px] transition-all duration-300 hover:shadow-xl hover:scale-105">
+                <img
+                  src="https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                  alt="Vietnamese farmers working in organic fields"
+                  className="rounded-2xl w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  data-testid="img-story"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Founder Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-white to-viet-earth-cream">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Text content */}
+            <div className="space-y-8">
+              <div className="text-center">
+                <h2 className="text-3xl md:text-4xl font-bold text-viet-green-dark mb-6">
+                  Our Founder
+                </h2>
+                <div className="flex items-center justify-center gap-4 mb-8">
+                  <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+                  <div className="w-3 h-3 bg-viet-green-dark rounded-full"></div>
+                  <div className="w-32 h-0.5 bg-viet-green-dark"></div>
+                </div>
+              </div>
+
+              <div className="space-y-6 text-center">
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed lg:leading-loose">
+                  "VietRoot is the passion project I've honed for years. It began in the U.S., as a mother searching for a clean, honest snack for my son amid a sea of junk. That small, urgent question, what will my child eat today? - opened a larger calling: to bring Vietnam's best, responsibly grown produce to families everywhere. With VietRoot, I'm building a bridge from skilled Vietnamese farmers to the world, offering snacks that are clean, transparent, and traceable, and a future where our children can choose better without compromise."
+                </p>
+
+                <div className="pt-6">
+                  <p className="text-2xl md:text-3xl font-serif italic text-gray-800 leading-relaxed">
+                    Because we're proud of the quality
+                    <br />
+                    of Vietnamese produce.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Founder Image */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md">
+                  <img
+                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000"
+                    alt="VietRoot Founder"
+                    className="w-full h-auto object-cover"
+                    data-testid="img-founder"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Founder's Note */}
-      <section className="py-16 md:py-24 bg-viet-earth-cream">
+      {/* <section className="py-16 md:py-24 bg-viet-earth-cream">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white rounded-xl p-8 md:p-12 shadow-lg">
             <Heart className="text-viet-green-medium h-12 w-12 mx-auto mb-6" />
@@ -161,7 +212,7 @@ export default function About() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Mission & Vision Section */}
       <MissionVision />
