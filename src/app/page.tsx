@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import QuickIntro from "@/components/QuickIntro";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import OurFarm from "@/components/OurFarm";
+import Partnership from "@/components/Partnership";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import CallToActionBlocks from "@/components/CallToActionBlocks";
 import Footer from "@/components/Footer";
@@ -115,6 +116,8 @@ export default function Home() {
         </Suspense>
 
         <OurFarm />
+
+        <Partnership />
 
         <NewsletterSignup />
 
