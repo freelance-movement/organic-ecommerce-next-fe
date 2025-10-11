@@ -78,44 +78,6 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
     { href: "/contact", label: "Contact", testId: "nav-contact" },
   ];
 
-  // Fetch logo asset by category 'logo_file'
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const backendOrigin = process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "";
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchLogo = async () => {
-      try {
-        const params = new URLSearchParams({
-          limit: "1",
-          category: "logo_file",
-          type: "image",
-          isActive: "true",
-        });
-        const url = `${backendOrigin}/api/v1/assets?${params.toString()}`;
-        const res = await fetch(url, {
-          signal: controller.signal,
-          cache: "force-cache",
-        });
-
-        if (!res.ok) return;
-        const data = await res.json();
-
-        const first = data?.data?.[0];
-        const rawUrl: string | undefined = first?.url;
-        if (!rawUrl) return;
-        const absolute = /^https?:\/\//i.test(rawUrl)
-          ? rawUrl
-          : `${backendOrigin}${rawUrl.startsWith("/") ? "" : "/"}${rawUrl}`;
-        setLogoUrl(absolute);
-      } catch (_) {
-        // fail silently; fallback will render
-      }
-    };
-    if (backendOrigin) fetchLogo();
-    return () => controller.abort();
-  }, [backendOrigin]);
-
   return (
     <nav
       className={`w-full shadow-sm z-50 ${
@@ -127,8 +89,8 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
     >
       <div
         className={`bg-white ${
-          variant === "absolute" 
-            ? "px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mx-2 sm:mx-4 lg:mx-6 max-w-8xl rounded-xl shadow-xl" 
+          variant === "absolute"
+            ? "px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 mx-2 sm:mx-4 lg:mx-6 max-w-8xl rounded-xl shadow-xl"
             : "px-4 sm:px-6 lg:px-8 w-full shadow-md"
         }`}
       >
@@ -140,24 +102,12 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
           {/* Logo */}
           <div className="flex items-center" data-testid="nav-logo">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt="VietRoot logo"
-                  className="h-8 w-auto mr-2"
-                  style={{ objectFit: "contain" }}
-                />
-              ) : (
-                <>
-                  <Leaf
-                    className="text-viet-green-medium h-6 w-6 mr-2"
-                    aria-hidden="true"
-                  />
-                  <span className="font-bold text-xl text-viet-green-dark">
-                    VietRoot
-                  </span>
-                </>
-              )}
+              <img
+                src="/asset-logo.png"
+                alt="VietRoot logo"
+                className="h-8 w-auto mr-2"
+                style={{ objectFit: "contain" }}
+              />
             </Link>
           </div>
 
@@ -280,7 +230,11 @@ export default function Navigation({ variant = "absolute" }: NavigationProps) {
                   </Button>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  Press <kbd className="px-2 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded">ESC</kbd> to close
+                  Press{" "}
+                  <kbd className="px-2 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded">
+                    ESC
+                  </kbd>{" "}
+                  to close
                 </p>
               </form>
             </div>
